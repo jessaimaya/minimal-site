@@ -1,0 +1,131 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+---
+
+<header>
+    <nav>
+        <div class="name">
+            <h2>
+                <a href="/">Jessaí<br />Maya</a>
+            </h2>
+        </div>
+        <div class="internal-links">
+            <HeaderLink href="/about">About</HeaderLink>
+            <HeaderLink href="/projects">Projects</HeaderLink>
+            <HeaderLink href="/blog">Articles</HeaderLink>
+        </div>
+        <div class="theme">
+            <div class="theme-switch" id="theme-switcher">
+                <div class="fill"></div>
+            </div>
+        </div>
+    </nav>
+</header>
+<style>
+    header {
+        margin: 0;
+        padding: 0 1em;
+        background: transparent;
+        box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    }
+    h2 {
+        margin: 0;
+        font-size: 1em;
+        display: inherit;
+    }
+
+    nav h2 a,
+    nav h2 a.active {
+        text-decoration: none;
+        padding-left: 0;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 300;
+        font-size: 1.5rem;
+    }
+    nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    nav .name, nav .theme {
+        flex: 1;
+        display: flex;
+    }
+    nav .theme {
+        justify-content: flex-end;
+    }
+    nav .internal-links {
+        display: flex;
+        flex: 3;
+        justify-content: center;
+        align-items: center;
+    }
+    nav a {
+        font-size: 1.1rem;
+        padding: 1em 0.5em 0.8rem;
+        color: var(--black);
+        border-bottom: 3px solid transparent;
+        text-decoration: none;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 400;
+    }
+    nav a.active {
+        text-decoration: none;
+        border-bottom-color: var(--accent);
+    }
+    
+    a.selected {
+        font-weight: bold;
+    }
+    .theme-switch {
+        border: solid 3px var(--accent);
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .fill {
+        background: var(--accent);
+        width: 25px;
+        height: 25px;
+        border: none;
+        transform: translate(9px, 9px) rotate(45deg);
+    }
+</style>
+<!-- Theme Switcher -->
+<script is:inline>
+    const themeSwitcher = document.getElementById("theme-switcher");
+    let currentTheme = localStorage.getItem("theme");
+    const enableTheme = (theme) => {
+        console.log("enabling...", theme);
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    };
+    switch (currentTheme) {
+        case "light":
+            enableTheme("light");
+            break;
+        case "dark":
+            enableTheme("dark");
+            break;
+        default:
+            enableTheme("light");
+            break;
+    }
+    themeSwitcher.addEventListener("click", () => {
+        if (document.documentElement.hasAttribute("data-theme")) {
+            currentTheme = document.documentElement.getAttribute("data-theme");
+        }
+        switch (currentTheme) {
+            case "light":
+                enableTheme("dark");
+                break;
+            case "dark":
+            default:
+                enableTheme("light");
+                break;
+        }
+    });
+</script>
