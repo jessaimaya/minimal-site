@@ -19,14 +19,17 @@ import HeaderLink from "./HeaderLink.astro";
                 <div class="fill"></div>
             </div>
         </div>
+        <div class="circle"></div>
     </nav>
 </header>
 <style>
     header {
-        margin: 0;
         padding: 0 1em;
         background: transparent;
         box-shadow: 0 2px 8px rgba(var(--black), 5%);
+        width: 960px;
+        max-width: calc(100% - 2em);
+        margin: auto;
     }
     h2 {
         margin: 0;
@@ -47,7 +50,8 @@ import HeaderLink from "./HeaderLink.astro";
         align-items: center;
         justify-content: space-between;
     }
-    nav .name, nav .theme {
+    nav .name,
+    nav .theme {
         flex: 1;
         display: flex;
     }
@@ -73,10 +77,23 @@ import HeaderLink from "./HeaderLink.astro";
         text-decoration: none;
         border-bottom-color: var(--accent);
     }
-    
+
     a.selected {
         font-weight: bold;
     }
+
+    .circle {
+        position: fixed;
+        width: 300px;
+        height: 300px;
+        border: solid 1px var(--accent);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+        z-index: -1;
+        opacity: 0.3;
+    }
+
     .theme-switch {
         border: solid 3px var(--accent);
         width: 25px;
@@ -91,7 +108,7 @@ import HeaderLink from "./HeaderLink.astro";
         width: 25px;
         height: 25px;
         border: none;
-        transform: translate(9px, 9px) rotate(45deg);
+        transform: translate(5px, 5px) rotate(45deg);
     }
 </style>
 <!-- Theme Switcher -->

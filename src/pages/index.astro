@@ -13,7 +13,88 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 
     <body>
         <Header />
-        <main></main>
+        <main>
+            <div class="intro">
+                <h1>Front-End</h1>
+                <a href="/projects">
+                    <span class="button">Projects</span>
+                    <span class="arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 404.39"><path fill-rule="nonzero" d="M438.95 219.45 0 219.99v-34.98l443.3-.55L269.8 25.79 293.39 0 512 199.92 288.88 404.39l-23.59-25.8z"/></svg>
+                    </span>
+                </a>
+            </div>
+            <div class="goal">
+                <p>
+                    Formed as a <strong>digital artist</strong> that works across <strong>multiple disciplines</strong>, mostly concentrating on aesthetics and <strong>performance</strong>.
+                </p>
+                <h1>Developer</h1>
+            </div>
+        </main>
         <Footer />
     </body>
 </html>
+
+<style> 
+    h1 {
+        font-family: 'FiraCode', monospace;
+        font-size: 12vh;
+        color: var(--accent);
+    }
+    .intro {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .intro a {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-decoration: none;
+        align-self: flex-end;
+        margin-bottom: 2rem;
+    }
+    .button {
+        background-color: var(--accent);
+        color: var(--background);
+        padding: 0.5em 4em;
+        border-radius: 2em;
+        text-align: center;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 300;
+        font-style: italic;
+        margin: 0 0.5rem;
+    }
+    .arrow {
+        width: 3rem;
+        height: 3rem;
+        padding: 1rem;
+        border-radius: 50%;
+        display: flex;
+        text-align: center;
+        fill: var(--background);
+        background-color: var(--accent);
+    }
+    .goal {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    [data-theme="light"] {
+        --gray: var(--dark-gray);
+    }
+    .goal p {
+        flex: 1;
+        color: var(--gray);
+        font-size: 1rem;
+        font-family: 'Open Sans', sans-serif;
+    }
+    strong {
+        color: var(--accent);
+    }
+    .goal h1 {
+        font-family: 'FiraCode', monospace;
+        font-size: 12vh;
+        color: var(--accent);
+    }
+</style>
