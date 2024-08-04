@@ -12,10 +12,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
     </head>
 
     <body>
+        <div  class="u-container">
         <Header />
-        <main>
             <div class="intro">
-                <h1>Front-End</h1>
+                <h1>Frontend</h1>
                 <a href="/projects">
                     <span class="button">Projects</span>
                     <span class="arrow">
@@ -25,20 +25,22 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
             </div>
             <div class="goal">
                 <p>
-                    Formed as a <strong>digital artist</strong> that works across <strong>multiple disciplines</strong>, mostly concentrating on aesthetics and <strong>performance</strong>.
+                    Formed as a <strong>digital artist</strong> who works in a <strong>range of disciplines</strong>, with a focus on <strong>aesthetics and performance</strong>.
+
                 </p>
                 <h1>Developer</h1>
             </div>
-        </main>
-        <Footer />
+            <Footer />
+        </div>
     </body>
 </html>
 
 <style> 
     h1 {
         font-family: 'FiraCode', monospace;
-        font-size: 12vh;
+        font-size: var(--step-5);
         color: var(--accent);
+        margin: var(--space-xs);
     }
     .intro {
         display: flex;
@@ -51,23 +53,24 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
         align-items: center;
         text-decoration: none;
         align-self: flex-end;
-        margin-bottom: 2rem;
+        margin-bottom: var(--space-s);
+        font-size: var(--step-0);
     }
     .button {
         background-color: var(--accent);
         color: var(--background);
-        padding: 0.5em 4em;
-        border-radius: 2em;
+        padding: var(--step--1) var(--step-4);
+        border-radius: var(--space-l);
+        margin-right: var(--space-m);
         text-align: center;
         font-family: 'Open Sans', sans-serif;
         font-weight: 300;
         font-style: italic;
-        margin: 0 0.5rem;
     }
     .arrow {
-        width: 3rem;
-        height: 3rem;
-        padding: 1rem;
+        width: var(--step-3);
+        height: var(--step-3);
+        padding: var(--space-xs);
         border-radius: 50%;
         display: flex;
         text-align: center;
@@ -86,15 +89,16 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
     .goal p {
         flex: 1;
         color: var(--gray);
-        font-size: 1rem;
+        font-size: var(--step-0);
         font-family: 'Open Sans', sans-serif;
     }
     strong {
         color: var(--accent);
     }
-    .goal h1 {
+    /*.goal h1 {
         font-family: 'FiraCode', monospace;
-        font-size: 12vh;
+        font-size: var(--step-5);
         color: var(--accent);
-    }
+        margin: var(--space-xs);
+    }*/
 </style>

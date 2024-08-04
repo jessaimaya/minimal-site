@@ -1,0 +1,48 @@
+/* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1024,20,1.333,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
+
+:root {
+  --step--2: clamp(0.6252rem, 0.8522rem + -0.3547vw, 0.7813rem);
+  --step--1: clamp(0.884rem, 0.9618rem + -0.1216vw, 0.9375rem);
+  --step-0: clamp(1.125rem, 1.0682rem + 0.2841vw, 1.25rem);
+  --step-1: clamp(1.35rem, 1.1602rem + 0.9489vw, 1.7675rem);
+  --step-2: clamp(1.62rem, 1.2203rem + 1.9983vw, 2.4992rem);
+  --step-3: clamp(1.944rem, 1.2213rem + 3.6135vw, 3.5339rem);
+  --step-4: clamp(2.3328rem, 1.1218rem + 6.055vw, 4.997rem);
+  --step-5: clamp(2.7994rem, 0.8601rem + 9.6963vw, 7.0657rem);
+
+  --space-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+  --space-2xs: clamp(0.5625rem, 0.5341rem + 0.142vw, 0.625rem);
+  --space-xs: clamp(0.875rem, 0.8466rem + 0.142vw, 0.9375rem);
+  --space-s: clamp(1.125rem, 1.0682rem + 0.2841vw, 1.25rem);
+  --space-m: clamp(1.6875rem, 1.6023rem + 0.4261vw, 1.875rem);
+  --space-l: clamp(2.25rem, 2.1364rem + 0.5682vw, 2.5rem);
+  --space-xl: clamp(3.375rem, 3.2045rem + 0.8523vw, 3.75rem);
+  --space-2xl: clamp(4.5rem, 4.2727rem + 1.1364vw, 5rem);
+  --space-3xl: clamp(6.75rem, 6.4091rem + 1.7045vw, 7.5rem);
+
+  --space-3xs-2xs: clamp(0.3125rem, 0.1705rem + 0.7102vw, 0.625rem);
+  --space-2xs-xs: clamp(0.5625rem, 0.392rem + 0.8523vw, 0.9375rem);
+  --space-xs-s: clamp(0.875rem, 0.7045rem + 0.8523vw, 1.25rem);
+  --space-s-m: clamp(1.125rem, 0.7841rem + 1.7045vw, 1.875rem);
+  --space-m-l: clamp(1.6875rem, 1.3182rem + 1.8466vw, 2.5rem);
+  --space-l-xl: clamp(2.25rem, 1.5682rem + 3.4091vw, 3.75rem);
+  --space-xl-2xl: clamp(3.375rem, 2.6364rem + 3.6932vw, 5rem);
+  --space-2xl-3xl: clamp(4.5rem, 3.1364rem + 6.8182vw, 7.5rem);
+
+  --space-s-l: clamp(1.125rem, 0.5rem + 3.125vw, 2.5rem);
+
+  --grid-max-width: 77.50rem;
+  --grid-gutter: var(--space-s-l, clamp(1.125rem, 0.6467rem + 2.3913vw, 2.5rem));
+  --grid-columns: 12;
+}
+
+.u-container {
+  max-width: var(--grid-max-width);
+  padding-inline: var(--grid-gutter);
+  margin-inline: auto;
+}
+
+.u-grid {
+  display: grid;
+  gap: var(--grid-gutter);
+}

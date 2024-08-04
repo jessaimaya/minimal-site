@@ -18,22 +18,19 @@ import HeaderLink from "./HeaderLink.astro";
             <div class="theme-switch" id="theme-switcher">
                 <div class="fill"></div>
             </div>
+            <div class="circle"></div>
         </div>
-        <div class="circle"></div>
     </nav>
 </header>
 <style>
     header {
-        padding: 0 1em;
+        padding: 0 var(--space-s);
         background: transparent;
         box-shadow: 0 2px 8px rgba(var(--black), 5%);
-        width: 960px;
-        max-width: calc(100% - 2em);
         margin: auto;
     }
     h2 {
         margin: 0;
-        font-size: 1em;
         display: inherit;
     }
 
@@ -43,12 +40,13 @@ import HeaderLink from "./HeaderLink.astro";
         padding-left: 0;
         font-family: "Open Sans", sans-serif;
         font-weight: 300;
-        font-size: 1.5rem;
+        font-size: var(--step-1);
     }
     nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: var(--space-l);
     }
     nav .name,
     nav .theme {
@@ -65,8 +63,8 @@ import HeaderLink from "./HeaderLink.astro";
         align-items: center;
     }
     nav a {
-        font-size: 1.1rem;
-        padding: 1em 0.5em 0.8rem;
+        font-size: var(--step-0);
+        padding: var(--space-s) var(--space-m);
         color: var(--black);
         border-bottom: 3px solid transparent;
         text-decoration: none;
@@ -82,16 +80,22 @@ import HeaderLink from "./HeaderLink.astro";
         font-weight: bold;
     }
 
+    .theme {
+        position: relative;
+    }
+
     .circle {
-        position: fixed;
+        position: absolute;
         width: 300px;
         height: 300px;
         border: solid 1px var(--accent);
         border-radius: 50%;
-        top: -100px;
-        right: -100px;
+        margin: 0 auto;
+        top: -175px;
+        right: -130px;
         z-index: -1;
         opacity: 0.3;
+        float: right;
     }
 
     .theme-switch {
