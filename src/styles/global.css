@@ -1,105 +1,105 @@
-@import url('./reset.css');
-@import url('./utopia.css');
+@import url("./reset.css");
+@import url("./utopia.css");
 
 :root {
-    --dark: #121212;
-    --light: #f5f5f5;
-    --gray: #a6a6a6;
-    --dark-gray: #3d3d3d;
-    --container-width: 1024px;
+  --dark: #262626;
+  --light: #fefffa;
+  --gray: #a6a6a6;
+  --dark-gray: #3d3d3d;
+  --container-width: 1024px;
 }
 [data-theme="light"] body {
-    --accent: var(--dark);
-    --background: var(--light);
+  --accent: var(--dark);
+  --background: var(--light);
 }
 [data-theme="dark"] body {
-    --accent: var(--light);
-    --background: var(--dark);
+  --accent: var(--light);
+  --background: var(--dark);
 }
 
 @font-face {
-    font-family: "FiraCode";
-    src: url("/fonts/FiraCode-Regular.ttf") format("ttf");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+  font-family: "FiraCode";
+  src: url("/fonts/FiraCode-Regular.ttf") format("ttf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 @font-face {
-    font-family: "FiraCode";
-    src: url("/fonts/FiraCode-Bold.ttf") format("ttf");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: "Open Sans";
-    src: url("/fonts/OpenSans-Light.ttf") format("ttf");
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap;
+  font-family: "FiraCode";
+  src: url("/fonts/FiraCode-Bold.ttf") format("ttf");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: "Open Sans";
-    src: url("/fonts/OpenSans-Regular.ttf") format("ttf");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-Light.ttf") format("ttf");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: "Open Sans";
-    src: url("/fonts/OpenSans-Bold.ttf") format("ttf");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-Regular.ttf") format("ttf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("/fonts/OpenSans-Bold.ttf") format("ttf");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 body {
-    font-family: "FiraCode", sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    background-size: 100% 600px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    font-size: var(--step-1);
-    color: var(--accent);
-    background-color: var(--background);
-    transition: color 100ms;
-    transition: background-color 300ms linear;
-    width: 100%;
-    @media (prefers-reduced-motion) {
-        transition: background 0;
-        transition: color 0 0;
-    }
+  font-family: "FiraCode", sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  background-size: 100% 600px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: var(--step-1);
+  color: var(--accent);
+  background-color: var(--background);
+  transition: color 100ms;
+  transition: background-color 300ms linear;
+  width: 100%;
+  @media (prefers-reduced-motion) {
+    transition: background 0;
+    transition: color 0 0;
+  }
 }
 
 strong,
 b {
-    font-weight: 700;
+  font-weight: 700;
 }
 a {
-    color: var(--dark);
+  color: var(--dark);
 }
 a:hover {
-    color: var(--dark-gray);
+  color: var(--dark-gray);
 }
 
 .sr-only {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-    clip: rect(1px 1px 1px 1px);
-    /* maybe deprecated but we need to support legacy browsers */
-    clip: rect(1px, 1px, 1px, 1px);
-    /* modern browsers, clip-path works inwards from each corner */
-    clip-path: inset(50%);
-    /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
-    white-space: nowrap;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+  clip: rect(1px 1px 1px 1px);
+  /* maybe deprecated but we need to support legacy browsers */
+  clip: rect(1px, 1px, 1px, 1px);
+  /* modern browsers, clip-path works inwards from each corner */
+  clip-path: inset(50%);
+  /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
+  white-space: nowrap;
 }

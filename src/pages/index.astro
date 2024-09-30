@@ -2,103 +2,21 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Bio from "../components/Bio.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 ---
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    </head>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
 
-    <body>
-        <div  class="u-container">
-        <Header />
-            <div class="intro">
-                <h1>Frontend</h1>
-                <a href="/projects">
-                    <span class="button">Projects</span>
-                    <span class="arrow">
-                        <svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 404.39"><path fill-rule="nonzero" d="M438.95 219.45 0 219.99v-34.98l443.3-.55L269.8 25.79 293.39 0 512 199.92 288.88 404.39l-23.59-25.8z"/></svg>
-                    </span>
-                </a>
-            </div>
-            <div class="goal">
-                <p>
-                    Formed as a <strong>digital artist</strong> who works in a <strong>range of disciplines</strong>, with a focus on <strong>aesthetics and performance</strong>.
-
-                </p>
-                <h1>Developer</h1>
-            </div>
-            <Footer />
-        </div>
-    </body>
+  <body>
+    <div class="u-container">
+      <Header />
+      <Bio />
+      <Footer />
+    </div>
+  </body>
 </html>
-
-<style> 
-    h1 {
-        font-family: 'FiraCode', monospace;
-        font-size: var(--step-5);
-        color: var(--accent);
-        margin: var(--space-xs);
-    }
-    .intro {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-    .intro a {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        text-decoration: none;
-        align-self: flex-end;
-        margin-bottom: var(--space-s);
-        font-size: var(--step-0);
-    }
-    .button {
-        background-color: var(--accent);
-        color: var(--background);
-        padding: var(--step--1) var(--step-4);
-        border-radius: var(--space-l);
-        margin-right: var(--space-m);
-        text-align: center;
-        font-family: 'Open Sans', sans-serif;
-        font-weight: 300;
-        font-style: italic;
-    }
-    .arrow {
-        width: var(--step-3);
-        height: var(--step-3);
-        padding: var(--space-xs);
-        border-radius: 50%;
-        display: flex;
-        text-align: center;
-        fill: var(--background);
-        background-color: var(--accent);
-    }
-    .goal {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-    [data-theme="light"] {
-        --gray: var(--dark-gray);
-    }
-    .goal p {
-        flex: 1;
-        color: var(--gray);
-        font-size: var(--step-0);
-        font-family: 'Open Sans', sans-serif;
-    }
-    strong {
-        color: var(--accent);
-    }
-    /*.goal h1 {
-        font-family: 'FiraCode', monospace;
-        font-size: var(--step-5);
-        color: var(--accent);
-        margin: var(--space-xs);
-    }*/
-</style>
