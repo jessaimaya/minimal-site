@@ -1,0 +1,124 @@
+---
+
+---
+
+<section class="work">
+  <h2>Work</h2>
+  <ul class="work-list">
+    <li class="job">
+      <p class="date">
+        <span>2019-</span>
+        <span>5 years</span>
+      </p>
+      <a href="#" title="Globant | Current job" class="business"> Globant </a>
+      <p class="role">Web UI Developer | React - AngularJS - Backbone</p>
+    </li>
+    <li class="job">
+      <p class="date">
+        <span>2019-2019</span>
+        <span>6 months</span>
+      </p>
+      <a href="#" title="EatIn | Fullstack" class="business"> EatIn App </a>
+      <p class="role">Fullstack & Designer | React - FeatherJs - Figma</p>
+    </li>
+    <li class="job">
+      <p class="date">
+        <span>2012-2019</span>
+        <span>7 years</span>
+      </p>
+      <a href="#" title="Kamikaze Lab| Lead Frontend" class="business">
+        Kamikaze Lab</a
+      >
+      <p class="role">Front-end Lead | React - AWS - Game Dev - GraphQL</p>
+    </li>
+  </ul>
+  <p class="experience">Work experience <span>12 years 8 months</span></p>
+</section>
+<style>
+  .work {
+    margin: var(--space-l-xl);
+  }
+  h2 {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-4);
+    color: var(--accent);
+    text-align: right;
+  }
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li:first-of-type {
+    border-top: solid 1px var(--accent);
+  }
+  li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px var(--accent);
+    padding: var(--space-s) var(--space-m);
+  }
+  li:hover {
+    background-color: var(--accent);
+  }
+  li:hover .business,
+  li:hover .role {
+    color: var(--background);
+  }
+  .date {
+    flex: 1;
+    display: flex;
+    color: var(--gray);
+    flex-direction: column;
+    font-size: var(--step--1);
+    font-family: "Open Sans", sans-serif;
+  }
+  .business {
+    flex: 2;
+    text-decoration: none;
+    color: var(--accent);
+    font-size: var(--step--1);
+    text-align: left;
+    font-family: "Open Sans", sans-serif;
+  }
+  .role {
+    flex: 3;
+    font-size: var(--step--1);
+    font-family: "FiraCode", monospace;
+  }
+  .experience {
+    text-align: right;
+    color: var(--gray);
+    font-size: var(--step--1);
+  }
+  .experience span {
+    display: block;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  @media (max-width: 48rem) {
+    li {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .date {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+    .busines {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      font-weight: bold;
+    }
+    .role {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+    }
+  }
+</style>
