@@ -18,6 +18,19 @@ clients:
         link: https://www.empower.com/
         logo: /img/empower-retirement-bw.png
         logoi: /img/empower-retirement-bw-i.png
+gallery:
+    -
+        title: Lending Club
+        source: /img/lending_home.png
+    -
+        title: Lending Club Personal
+        source: /img/lending_club_personal.png
+    -
+        title: Empower Retirement Home
+        source: /img/empower_home.png
+    -
+        title: Empower Retirement Participant
+        source: /img/empower_participant.png
 stack:
     - React
     - Handlebars
@@ -48,10 +61,10 @@ challenges:
 ---
 It is essential to **document** not only in the code, but also in a shared knowledge base such as _Confluence_ or a wiki, so that future teams can access this information.
 
-I prioritize producing **legible code above "smart" code** since high-level languages like JavaScript are designed to be **understood by humans, not machines**.
+I prioritize producing **legible code above "smart" code** since _high-level languages_ like JavaScript are designed to be **understood by humans, not machines**.
 
-**Automated tests and code coverage** are only the beginning for code reviews. The true benefit comes from providing **feedback** and cooperating on changes.
+**Automated tests and code coverage** are only the beginning for _code reviews_. The true benefit comes from providing **feedback** and cooperating on changes.
 
-Clear and comprehensive **ticket refinement** is essential for a successful sprint. **Addressing any ambiguities** before allocating jobs helps to avoid bottlenecks and confusion later in the process.
+Clear and comprehensive **ticket refinement** is essential for a successful sprint. **Addressing any ambiguities** before allocating jobs helps to _avoid bottlenecks_ and confusion later in the process.
 
-**Knowledge sharing** is a fundamental value of mine. The more we share insights and expertise with our team, the stronger and more effective we become. **Collaboration drives progress**, and we grow as a team when we support each other's growth.
+**Knowledge sharing** is a fundamental value of mine. The more we _share insights and expertise_ with our team, the stronger and more effective we become. **Collaboration drives progress**, and we grow as a team when we support each other's growth.

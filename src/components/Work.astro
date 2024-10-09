@@ -6,30 +6,34 @@
   <h2>Work</h2>
   <ul class="work-list">
     <li class="job">
-      <p class="date">
-        <span>2019-</span>
-        <span>5 years</span>
-      </p>
-      <a href="#" title="Globant | Current job" class="business"> Globant </a>
-      <p class="role">Web UI Developer | React - AngularJS - Backbone</p>
+      <a href="/studies/globant" title="Globant | Current job" class="job">
+        <p class="date">
+          <span>2019-Present</span>
+          <span>5 years</span>
+        </p>
+        <p class="business">Globant</p>
+        <p class="role">Web UI Developer | React - AngularJS - Backbone</p>
+      </a>
     </li>
     <li class="job">
-      <p class="date">
-        <span>2019-2019</span>
-        <span>6 months</span>
-      </p>
-      <a href="#" title="EatIn | Fullstack" class="business"> EatIn App </a>
-      <p class="role">Fullstack & Designer | React - FeatherJs - Figma</p>
+      <a href="/studies/eatin" title="Eat-In" class="job">
+        <p class="date">
+          <span>2019-2019</span>
+          <span>6 months</span>
+        </p>
+        <p class="business">EatIn App</p>
+        <p class="role">Fullstack & Designer | React - FeatherJs - Figma</p>
+      </a>
     </li>
     <li class="job">
-      <p class="date">
-        <span>2012-2019</span>
-        <span>7 years</span>
-      </p>
-      <a href="#" title="Kamikaze Lab| Lead Frontend" class="business">
-        Kamikaze Lab</a
-      >
-      <p class="role">Front-end Lead | React - AWS - Game Dev - GraphQL</p>
+      <a href="/studies/kamikaze" title="Kamikaze Lab" class="job">
+        <p class="date">
+          <span>2012-2019</span>
+          <span>7 years</span>
+        </p>
+        <p class="business">Kamikaze Lab</p>
+        <p class="role">Front-end Lead | React - AWS - Game Dev - GraphQL</p>
+      </a>
     </li>
   </ul>
   <p class="experience">Work experience <span>12 years 8 months</span></p>
@@ -54,11 +58,12 @@
   li:first-of-type {
     border-top: solid 1px var(--accent);
   }
-  li {
+  a.job {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    text-decoration: none;
     border-bottom: solid 1px var(--accent);
     padding: var(--space-s) var(--space-m);
   }
@@ -87,8 +92,10 @@
   }
   .role {
     flex: 3;
+    color: var(--accent);
     font-size: var(--step--1);
     font-family: "FiraCode", monospace;
+    text-decoration: none;
   }
   .experience {
     text-align: right;

@@ -4,64 +4,68 @@
 import "../styles/global.css";
 
 interface Props {
-    title: string;
-    description: string;
-    image?: string;
+  title: string;
+  description: string;
+  image?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
+const {
+  title,
+  description,
+  image = "/img/jessai_maya_profile_picture",
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Font preloads -->
 <link
-    rel="preload"
-    href="/fonts/FiraCode-Light.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/FiraCode-Light.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <link
-    rel="preload"
-    href="/fonts/FiraCode-Regular.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/FiraCode-Regular.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <link
-    rel="preload"
-    href="/fonts/FiraCode-Bold.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/FiraCode-Bold.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <link
-    rel="preload"
-    href="/fonts/OpenSans-Light.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/OpenSans-Light.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <link
-    rel="preload"
-    href="/fonts/OpenSans-Regular.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/OpenSans-Regular.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <link
-    rel="preload"
-    href="/fonts/OpenSans-Bold.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
+  rel="preload"
+  href="/fonts/OpenSans-Bold.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
 />
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

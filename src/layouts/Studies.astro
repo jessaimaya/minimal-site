@@ -45,7 +45,7 @@ const { title, description, task, position, clients, stack } = Astro.props;
       }
       .position,
       .clients-title,
-      .challenges-title {
+      .insights-title {
         font-size: var(--step-3);
         display: block;
         text-align: right;
@@ -88,16 +88,18 @@ const { title, description, task, position, clients, stack } = Astro.props;
         display: block;
       }
       .clients,
-      .challenges {
+      .insights {
         margin: var(--space-m) auto;
       }
       .client-list {
         list-style: none;
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-row: auto;
         justify-content: space-around;
         align-items: center;
         align-content: center;
+        gap: var(--space-l);
       }
       .client-item {
         display: flex;
@@ -126,12 +128,18 @@ const { title, description, task, position, clients, stack } = Astro.props;
         border-radius: var(--step-0);
         text-align: center;
       }
-      .challenges {
+      .insights {
         colot: var(--accent);
         font-size: var(--step-0);
         list-style: none;
         display: flex;
         flex-direction: column;
+      }
+      @media (max-width: 48rem) {
+        .task {
+          grid-template-columns: 1fr;
+          grid-template-columns: auto;
+        }
       }
     </style>
   </head>
@@ -154,7 +162,6 @@ const { title, description, task, position, clients, stack } = Astro.props;
             <h3 class="clients-title">Clients</h3>
             <ul class="client-list">
               {clients.map((client: Client) => {
-                console.log(client);
                 return (
                   <li class="client-item">
                     <a title={client.title} href={client.link}>
@@ -172,8 +179,8 @@ const { title, description, task, position, clients, stack } = Astro.props;
         <h3 class="subtitle">../Stack...</h3>
         <p>{stack.join(" / ")}</p>
       </section>
-      <section class="challenges">
-        <h3 class="challenges-title">Challenges</h3>
+      <section class="insights">
+        <h3 class="insights-title">Insights</h3>
         <slot />
       </section>
     </main>
