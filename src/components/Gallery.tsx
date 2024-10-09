@@ -10,9 +10,9 @@ interface GalleryProps {
     data: Array<Image>
 };
 
-type GalleryType<T> = (T: GalleryProps) => ReactElement;
+type GalleryType = (T: GalleryProps) => ReactElement;
 
-const Gallery: GalleryType<GalleryProps> = (props: GalleryProps) => {
+const Gallery: GalleryType = (props: GalleryProps) => {
      const [activeSlideIndex, setActiveSlideIndex] = useState(0);
     const {data} = props;
     return <Fragment>
