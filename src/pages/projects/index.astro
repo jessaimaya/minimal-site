@@ -1,0 +1,194 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const projects = await getCollection('projects');
+const sortedProjects = projects.sort((a, b) => 
+  b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`Interactive Graphics | ${SITE_TITLE}`} description="Visual programming with Rust and C++" />
+  </head>
+  <body>
+    <div class="u-container">
+      <Header />
+      <main>
+        <section class="intro">
+          <h1 class="title">
+            <span class="position">Code That</span>
+            <span class="bio">
+              I build interactive graphics using <strong>Rust</strong> and <strong>C++</strong> compiled to <strong>WebAssembly</strong>, 
+              then connect them to the web with <strong>Canvas 2D</strong> and <strong>JavaScript</strong>. 
+              Each project runs native-speed algorithms in your browser with real-time controls.
+            </span>
+            <span class="position-last">Moves</span>
+          </h1>
+        </section>
+        
+        <section class="projects">
+          {sortedProjects.map(project => (
+            <article class="project">
+              <div class="project-meta">
+                <span class="framework">{project.data.framework}</span>
+                <span class="difficulty">{project.data.difficulty}</span>
+                <time datetime={project.data.date.toISOString()}>
+                  {project.data.date.toLocaleDateString()}
+                </time>
+              </div>
+              
+              <h2>
+                <a href={`/projects/${project.slug}`}>{project.data.title}</a>
+              </h2>
+              
+              <p>{project.data.description}</p>
+              
+              <div class="tags">
+                {project.data.tags.map(tag => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </section>
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>
+
+<style>
+  .intro {
+    margin: var(--space-xl) 0;
+  }
+  
+  .title {
+    font-size: var(--step-4);
+    line-height: 1.1;
+    font-weight: 400;
+    color: var(--accent);
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .position,
+  .position-last {
+    display: block;
+    font-size: var(--step-3);
+    font-weight: 700;
+    color: var(--accent);
+  }
+  
+  .bio {
+    display: block;
+    font-size: var(--step-0);
+    font-weight: 400;
+    line-height: 1.5;
+    margin: var(--space-s) 0;
+    color: var(--gray);
+    font-family: "Open Sans", sans-serif;
+  }
+  
+  .projects {
+    margin: var(--space-xl) 0;
+  }
+  
+  .project {
+    margin-bottom: var(--space-l);
+    padding-bottom: var(--space-m);
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  .project:last-child {
+    border-bottom: none;
+  }
+  
+  .project-meta {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: center;
+    margin-bottom: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--gray);
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .framework,
+  .difficulty {
+    padding: var(--space-3xs) var(--space-2xs);
+    border: 1px solid var(--gray);
+    font-size: var(--step--2);
+    font-weight: 400;
+  }
+  
+  .framework {
+    color: var(--accent);
+    background: transparent;
+  }
+  
+  .difficulty {
+    color: var(--gray);
+    background: transparent;
+  }
+  
+  .project h2 {
+    margin: 0 0 var(--space-xs) 0;
+    font-size: var(--step-1);
+    font-weight: 700;
+    line-height: 1.2;
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .project h2 a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  
+  .project h2 a:hover {
+    color: var(--dark-gray);
+  }
+  
+  .project p {
+    margin: 0 0 var(--space-s) 0;
+    font-size: var(--step-0);
+    line-height: 1.5;
+    color: var(--gray);
+    font-family: "Open Sans", sans-serif;
+  }
+  
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+  
+  .tag {
+    font-size: var(--step--2);
+    color: var(--gray);
+    font-family: "FiraCode", sans-serif;
+    font-weight: 400;
+    padding: var(--space-3xs) var(--space-2xs);
+    border: 1px solid var(--gray);
+    background: transparent;
+  }
+  
+  @media (max-width: 48rem) {
+    .project-meta {
+      flex-wrap: wrap;
+    }
+    
+    .title {
+      font-size: var(--step-3);
+    }
+    
+    .position,
+    .position-last {
+      font-size: var(--step-2);
+    }
+  }
+</style>

@@ -1,0 +1,1 @@
+/home/jessai/Code/minimal-site/src/native/macroquad/fractal-trees/target/wasm32-unknown-unknown/release/fractal_trees.wasm: /home/jessai/Code/minimal-site/src/native/macroquad/fractal-trees/src/lib.rs
