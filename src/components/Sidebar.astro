@@ -1,0 +1,202 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+  current?: string;
+}
+
+const { projects, current } = Astro.props;
+
+// Sort projects by date, newest first
+const sortedProjects = projects.sort((a, b) => 
+  b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Group projects by difficulty
+const groupedProjects = sortedProjects.reduce((acc, project) => {
+  const difficulty = project.data.difficulty;
+  if (!acc[difficulty]) acc[difficulty] = [];
+  acc[difficulty].push(project);
+  return acc;
+}, {} as Record<string, CollectionEntry<'projects'>[]>);
+---
+
+<nav class="sidebar-nav">
+  <div class="sidebar-header">
+    <h2>Interactive Graphics</h2>
+    <p>Visual programming projects</p>
+  </div>
+  
+  <div class="sidebar-content">
+    {Object.entries(groupedProjects).map(([difficulty, projects]) => (
+      <div class="project-group">
+        <h3 class="group-title">{difficulty}</h3>
+        <ul class="project-list">
+          {projects.map(project => (
+            <li class="project-item">
+              <a 
+                href={`/projects/${project.slug}`}
+                class:list={[
+                  'project-link',
+                  { 'active': current === project.slug }
+                ]}
+              >
+                <div class="project-info">
+                  <span class="project-title">{project.data.title}</span>
+                  <span class="project-framework">{project.data.framework}</span>
+                </div>
+                <div class="project-tags">
+                  {project.data.tags.slice(0, 2).map(tag => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+  
+  <div class="sidebar-footer">
+    <a href="/" class="back-link">← Portfolio</a>
+  </div>
+</nav>
+
+<style>
+  .sidebar-nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--background);
+    border-right: 1px solid var(--gray);
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .sidebar-header {
+    padding: var(--space-m);
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  .sidebar-header h2 {
+    margin: 0 0 var(--space-2xs) 0;
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  
+  .sidebar-header p {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--gray);
+    font-family: "Open Sans", sans-serif;
+  }
+  
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-s) 0;
+  }
+  
+  .project-group {
+    margin-bottom: var(--space-m);
+  }
+  
+  .group-title {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 var(--space-xs) 0;
+    padding: 0 var(--space-s);
+    text-transform: lowercase;
+  }
+  
+  .project-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .project-item {
+    margin: 0;
+  }
+  
+  .project-link {
+    display: block;
+    padding: var(--space-xs) var(--space-s);
+    text-decoration: none;
+    color: var(--gray);
+    border-left: 2px solid transparent;
+    transition: all 0.1s ease;
+  }
+  
+  .project-link:hover {
+    color: var(--accent);
+    border-left-color: var(--gray);
+  }
+  
+  .project-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+  
+  .project-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3xs);
+  }
+  
+  .project-title {
+    font-weight: 400;
+    font-size: var(--step--1);
+  }
+  
+  .project-framework {
+    font-size: var(--step--2);
+    padding: var(--space-3xs);
+    border: 1px solid var(--gray);
+    color: var(--gray);
+    background: transparent;
+    font-weight: 400;
+  }
+  
+  .project-tags {
+    display: flex;
+    gap: var(--space-3xs);
+    flex-wrap: wrap;
+  }
+  
+  .tag {
+    font-size: var(--step--2);
+    color: var(--gray);
+    font-weight: 400;
+  }
+  
+  .sidebar-footer {
+    padding: var(--space-s);
+    border-top: 1px solid var(--gray);
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--step--1);
+    color: var(--gray);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.1s ease;
+  }
+  
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 48rem) {
+    .sidebar-nav {
+      display: none;
+    }
+  }
+</style>

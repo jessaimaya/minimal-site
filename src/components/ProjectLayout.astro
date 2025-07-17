@@ -1,0 +1,111 @@
+---
+import BaseHead from './BaseHead.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Sidebar from './Sidebar.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  allProjects: CollectionEntry<'projects'>[];
+}
+
+const { project, allProjects } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={project.data.title} description={project.data.description} />
+  </head>
+  <body>
+    <div class="project-container">
+      <div class="sidebar">
+        <Sidebar projects={allProjects} current={project.slug} />
+      </div>
+      <div class="content">
+        <div class="desktop-header">
+          <div class="u-container">
+            <Header />
+          </div>
+        </div>
+        <div class="mobile-header">
+          <div class="u-container">
+            <Header />
+          </div>
+        </div>
+        <main class="main-content">
+          <div class="u-container">
+            <slot />
+          </div>
+        </main>
+        <div class="mobile-footer">
+          <div class="u-container">
+            <Footer />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .project-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .sidebar {
+    background: var(--background);
+    border-right: 1px solid var(--gray);
+    overflow-y: auto;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--background);
+  }
+  
+  .desktop-header {
+    display: block;
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  .mobile-header,
+  .mobile-footer {
+    display: none;
+  }
+  
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-l) 0;
+  }
+  
+  @media (max-width: 48rem) {
+    .project-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .desktop-header {
+      display: none;
+    }
+    
+    .mobile-header,
+    .mobile-footer {
+      display: block;
+    }
+    
+    .main-content {
+      padding: var(--space-m) 0;
+    }
+  }
+</style>

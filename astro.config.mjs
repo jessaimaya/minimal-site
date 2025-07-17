@@ -10,5 +10,26 @@ export default defineConfig({
     enabled: false
   },
   site: "https://jessai.dev",
-  integrations: [mdx(), sitemap(), react()]
+  integrations: [
+    mdx({
+      shikiConfig: {
+        theme: 'github-dark'
+      }
+    }), 
+    sitemap(), 
+    react()
+  ],
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ['canvas', 'fs']
+      }
+    }
+  },
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin'
+    }
+  }
 });
