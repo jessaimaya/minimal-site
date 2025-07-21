@@ -17,7 +17,7 @@ Each project consists of:
 - **Compiler**: wasm-pack
 - **API**: Canvas 2D via web-sys
 
-### C++ (Raylib)
+### C (Raylib)
 - **Location**: `src/native/raylib/[project-name]/`
 - **Compiler**: emscripten
 - **API**: Raylib graphics library
@@ -162,11 +162,11 @@ EOF
 sed -i "s/PROJECT_NAME/${PROJECT_NAME//-/_}/g" src/lib.rs
 ```
 
-### 3B. C++ Project Setup (Raylib)
+### 3B. C Project Setup (Raylib)
 
 ```bash
-# Create main.cpp
-cat > main.cpp << 'EOF'
+# Create main.c
+cat > main.c << 'EOF'
 #include "raylib.h"
 #include <emscripten/emscripten.h>
 
@@ -188,21 +188,19 @@ void UpdateDrawFrame() {
     EndDrawing();
 }
 
-extern "C" {
-    void EMSCRIPTEN_KEEPALIVE start_project() {
-        InitWindow(screenWidth, screenHeight, "PROJECT_NAME");
-        emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
-    }
-    
-    void EMSCRIPTEN_KEEPALIVE stop_project() {
-        emscripten_cancel_main_loop();
-    }
-    
-    void EMSCRIPTEN_KEEPALIVE update_params(int p1, float p2, float p3) {
-        param1 = p1;
-        param2 = p2; 
-        param3 = p3;
-    }
+void EMSCRIPTEN_KEEPALIVE start_project() {
+    InitWindow(screenWidth, screenHeight, "PROJECT_NAME");
+    emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
+}
+
+void EMSCRIPTEN_KEEPALIVE stop_project() {
+    emscripten_cancel_main_loop();
+}
+
+void EMSCRIPTEN_KEEPALIVE update_params(int p1, float p2, float p3) {
+    param1 = p1;
+    param2 = p2; 
+    param3 = p3;
 }
 
 int main() {
@@ -212,7 +210,22 @@ int main() {
 EOF
 
 # Replace PROJECT_NAME placeholder
-sed -i "s/PROJECT_NAME/${PROJECT_NAME}/g" main.cpp
+sed -i "s/PROJECT_NAME/${PROJECT_NAME}/g" main.c
+
+# Create a simple build script (optional - the main build uses emcc directly)
+cat > build.sh << 'EOF'
+#!/bin/bash
+emcc main.c -o project.js \
+    -s USE_GLFW=3 \
+    -s ASYNCIFY \
+    -s TOTAL_MEMORY=67108864 \
+    -s FORCE_FILESYSTEM=1 \
+    -s ASSERTIONS=1 \
+    -DPLATFORM_WEB \
+    -s EXPORTED_FUNCTIONS="['_main','_start_project','_stop_project','_update_params']" \
+    -s EXPORTED_RUNTIME_METHODS="['ccall','cwrap']"
+EOF
+chmod +x build.sh
 ```
 
 ### 4. Create Content Markdown
@@ -308,8 +321,8 @@ Your `lib.rs` must export these functions:
 - `stop_[project_name]()`
 - `update_[project_name]_params(param1: type, param2: type, ...)`
 
-### C++ Projects
-Your `main.cpp` must export these functions:
+### C Projects
+Your `main.c` must export these functions:
 - `start_project()`
 - `stop_project()`
 - `update_params(param1, param2, ...)`
@@ -348,7 +361,7 @@ controls:
 ### For Rust Projects
 - Install wasm-pack: `curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh`
 
-### For C++ Projects  
+### For C Projects  
 - Install emscripten: Follow [emscripten installation guide](https://emscripten.org/docs/getting_started/downloads.html)
 
 ## Troubleshooting
@@ -371,7 +384,7 @@ controls:
 
 The NativeCanvas component includes a "Show Code" button that displays the source code in a modal. This feature:
 
-- Automatically reads the source file (lib.rs for Rust, main.cpp for C++)
+- Automatically reads the source file (lib.rs for Rust, main.c for C)
 - Displays syntax-highlighted code in a modal overlay
 - Provides easy access for users to understand implementation
 - Maintains the minimal design aesthetic with monospace fonts

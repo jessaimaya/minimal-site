@@ -31,7 +31,7 @@ fi
 
 echo "Select framework:"
 echo "1) Rust (macroquad/Canvas 2D)"
-echo "2) C++ (raylib)"
+echo "2) C (raylib)"
 read -p "Choice (1 or 2): " FRAMEWORK_CHOICE
 
 case $FRAMEWORK_CHOICE in
@@ -225,9 +225,9 @@ pub fn main() {
 EOF
 
 elif [[ "$FRAMEWORK" == "raylib" ]]; then
-    echo -e "${GREEN}🎮 Creating C++ project...${NC}"
+    echo -e "${GREEN}🎮 Creating C project...${NC}"
     
-    cat > "$PROJECT_DIR/main.cpp" << EOF
+    cat > "$PROJECT_DIR/main.c" << EOF
 #include "raylib.h"
 #include <emscripten/emscripten.h>
 
@@ -249,21 +249,19 @@ void UpdateDrawFrame() {
     EndDrawing();
 }
 
-extern "C" {
-    void EMSCRIPTEN_KEEPALIVE start_project() {
-        InitWindow(screenWidth, screenHeight, "$PROJECT_TITLE");
-        emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
-    }
-    
-    void EMSCRIPTEN_KEEPALIVE stop_project() {
-        emscripten_cancel_main_loop();
-    }
-    
-    void EMSCRIPTEN_KEEPALIVE update_params(int p1, float p2, float p3) {
-        param1 = p1;
-        param2 = p2; 
-        param3 = p3;
-    }
+void EMSCRIPTEN_KEEPALIVE start_project() {
+    InitWindow(screenWidth, screenHeight, "$PROJECT_TITLE");
+    emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
+}
+
+void EMSCRIPTEN_KEEPALIVE stop_project() {
+    emscripten_cancel_main_loop();
+}
+
+void EMSCRIPTEN_KEEPALIVE update_params(int p1, float p2, float p3) {
+    param1 = p1;
+    param2 = p2; 
+    param3 = p3;
 }
 
 int main() {
@@ -370,7 +368,7 @@ echo "1. Implement your graphics logic in:"
 if [[ "$FRAMEWORK" == "macroquad" ]]; then
     echo "   ${PROJECT_DIR}/src/lib.rs (see draw_graphics function)"
 else
-    echo "   ${PROJECT_DIR}/main.cpp (see UpdateDrawFrame function)"
+    echo "   ${PROJECT_DIR}/main.c (see UpdateDrawFrame function)"
 fi
 echo "2. Update the control descriptions in:"
 echo "   ${CONTENT_FILE}"

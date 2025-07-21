@@ -33,11 +33,22 @@ for dir in */; do
     if [ -d "$dir" ]; then
         echo "Building Raylib project: $dir"
         cd "$dir"
-        if command -v emcmake >/dev/null 2>&1; then
-            emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release
-            emmake make -C build
+        if command -v emcc >/dev/null 2>&1; then
+            # Compile C source to WASM using emcc directly
+            emcc main.c -o "${dir%/}.js" \
+                -s USE_GLFW=3 \
+                -s ASYNCIFY \
+                -s TOTAL_MEMORY=67108864 \
+                -s FORCE_FILESYSTEM=1 \
+                -s ASSERTIONS=1 \
+                --shell-file ../../../assets/shell_minimal.html \
+                -DPLATFORM_WEB \
+                --preload-file . \
+                -s EXPORTED_FUNCTIONS="['_main','_start_project','_stop_project','_update_params']" \
+                -s EXPORTED_RUNTIME_METHODS="['ccall','cwrap']"
+            
             mkdir -p ../../../../public/dist/wasm/"$dir"
-            cp build/*.js build/*.wasm ../../../../public/dist/wasm/"$dir"/ 2>/dev/null
+            cp "${dir%/}.js" "${dir%/}.wasm" ../../../../public/dist/wasm/"$dir"/ 2>/dev/null
             echo "✅ Built $dir successfully"
         else
             echo "❌ emscripten not found, skipping $dir"

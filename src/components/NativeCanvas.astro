@@ -1,12 +1,12 @@
 ---
 export interface Props {
   project: string;
-  framework: 'macroquad' | 'raylib';
+  framework: "macroquad" | "raylib";
   width: number;
   height: number;
   controls?: Array<{
     name: string;
-    type: 'range' | 'number' | 'color' | 'checkbox';
+    type: "range" | "number" | "color" | "checkbox";
     min?: number;
     max?: number;
     step?: number;
@@ -15,189 +15,218 @@ export interface Props {
   sourceCode?: string;
 }
 
-const { project, framework, width, height, controls = [], sourceCode } = Astro.props;
+const {
+  project,
+  framework,
+  width,
+  height,
+  controls = [],
+  sourceCode,
+} = Astro.props;
 const canvasId = `canvas-${project}`;
 ---
 
 <div class="native-canvas-container">
   <div class="canvas-wrapper">
-    <canvas 
+    <canvas
       id={canvasId}
-      width={width} 
+      width={width}
       height={height}
       data-project={project}
-      data-framework={framework}
-    ></canvas>
+      data-framework={framework}></canvas>
   </div>
-  
-  {controls.length > 0 && (
-    <div class="controls">
-      <h3>Controls</h3>
-      {controls.map(control => (
-        <div class="control-group">
-          <label for={`${project}-${control.name}`}>
-            {control.name}
-          </label>
-          <input 
-            type={control.type}
-            id={`${project}-${control.name}`}
-            data-param={control.name}
-            min={control.min}
-            max={control.max}
-            step={control.step}
-            value={control.default}
-          />
-          <span class="control-value" id={`${project}-${control.name}-value`}>
-            {control.default}
-          </span>
-        </div>
-      ))}
-    </div>
-  )}
-  
+
+  {
+    controls.length > 0 && (
+      <div class="controls">
+        <h3>Controls</h3>
+        {controls.map((control) => (
+          <div class="control-group">
+            <label for={`${project}-${control.name}`}>{control.name}</label>
+            <input
+              type={control.type}
+              id={`${project}-${control.name}`}
+              data-param={control.name}
+              min={control.min}
+              max={control.max}
+              step={control.step}
+              value={control.default}
+            />
+            <span class="control-value" id={`${project}-${control.name}-value`}>
+              {control.default}
+            </span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   <div class="project-actions">
     <button id={`start-${project}`} class="btn btn-primary">Start</button>
     <button id={`stop-${project}`} class="btn btn-secondary">Stop</button>
     <button id={`reset-${project}`} class="btn btn-secondary">Reset</button>
-    {sourceCode && (
-      <button id={`code-${project}`} class="btn btn-secondary">Show Code</button>
-    )}
+    {
+      sourceCode && (
+        <button id={`code-${project}`} class="btn btn-secondary">
+          Show Code
+        </button>
+      )
+    }
   </div>
-  
-  {sourceCode && (
-    <div id={`code-modal-${project}`} class="code-modal hidden">
-      <div class="code-modal-content">
-        <div class="code-header">
-          <h3>Source Code ({framework === 'macroquad' ? 'Rust' : 'C++'})</h3>
-          <button id={`close-code-${project}`} class="close-btn">&times;</button>
+
+  {
+    sourceCode && (
+      <div id={`code-modal-${project}`} class="code-modal hidden">
+        <div class="code-modal-content">
+          <div class="code-header">
+            <h3>Source Code ({framework === "macroquad" ? "Rust" : "C"})</h3>
+            <button id={`close-code-${project}`} class="close-btn">
+              &times;
+            </button>
+          </div>
+          <pre class="code-block">
+            <code id={`code-content-${project}`} />
+          </pre>
         </div>
-        <pre class="code-block"><code id={`code-content-${project}`}></code></pre>
       </div>
-    </div>
-  )}
+    )
+  }
 </div>
 
 <script define:vars={{ project, framework, canvasId, sourceCode }}>
   let wasmModule = null;
-  
+
   // Use both astro:page-load and DOMContentLoaded for better compatibility
   async function initializeWasm() {
-    console.log('Initializing WASM...');
+    console.log("Initializing WASM...");
     const canvas = document.getElementById(canvasId);
     const startBtn = document.getElementById(`start-${project}`);
     const stopBtn = document.getElementById(`stop-${project}`);
     const resetBtn = document.getElementById(`reset-${project}`);
-    
+
     try {
-      if (framework === 'macroquad') {
-        console.log('Loading WASM module for:', project);
-        
+      if (framework === "macroquad") {
+        console.log("Loading WASM module for:", project);
+
         // Import the generated WASM module
-        const moduleFileName = project.replace(/-/g, '_');
-        const module = await import(`/dist/wasm/${project}/${moduleFileName}.js`);
+        const moduleFileName = project.replace(/-/g, "_");
+        const module = await import(
+          `/dist/wasm/${project}/${moduleFileName}.js`
+        );
         await module.default();
         wasmModule = module;
-        
-        console.log('WASM module loaded successfully');
-        console.log('Available WASM functions:', Object.keys(wasmModule));
-        
+
+        console.log("WASM module loaded successfully");
+        console.log("Available WASM functions:", Object.keys(wasmModule));
+
         // Initialize macroquad with the canvas
         if (canvas) {
-          console.log('Canvas found:', canvas);
-          console.log('Canvas ID:', canvasId);
-          console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
-          
+          console.log("Canvas found:", canvas);
+          console.log("Canvas ID:", canvasId);
+          console.log("Canvas dimensions:", canvas.width, "x", canvas.height);
+
           canvas.id = canvasId; // Ensure canvas has the right ID
-          
+
           // Check if init function exists
-          if (typeof wasmModule.init_fractal_trees === 'function') {
+          if (typeof wasmModule.init_fractal_trees === "function") {
             wasmModule.init_fractal_trees(canvasId);
-            console.log('init_fractal_trees called successfully with canvas:', canvasId);
+            console.log(
+              "init_fractal_trees called successfully with canvas:",
+              canvasId
+            );
           } else {
-            console.error('init_fractal_trees function not found');
+            console.error("init_fractal_trees function not found");
           }
-          
+
           // Add a visible border to help debug
-          canvas.style.border = '2px solid #666';
-          canvas.style.backgroundColor = '#000';
+          canvas.style.border = "2px solid #666";
+          canvas.style.backgroundColor = "#000";
         } else {
-          console.error('Canvas not found!');
+          console.error("Canvas not found!");
         }
-        
-      } else if (framework === 'raylib') {
+      } else if (framework === "raylib") {
         // Load raylib WASM module
-        const script = document.createElement('script');
+        const script = document.createElement("script");
         script.src = `/dist/wasm/${project}/${project}.js`;
         document.head.appendChild(script);
-        
+
         // Wait for module to load
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
           script.onload = resolve;
         });
       }
     } catch (error) {
-      console.error('Failed to load project:', error);
-      console.error('Error details:', error.message);
+      console.error("Failed to load project:", error);
+      console.error("Error details:", error.message);
     }
-    
-    startBtn?.addEventListener('click', async () => {
+
+    startBtn?.addEventListener("click", async () => {
       try {
-        console.log('Start button clicked!');
-        console.log('Framework:', framework);
-        console.log('WASM Module:', wasmModule);
-        
-        if (framework === 'macroquad' && wasmModule) {
-          console.log('Calling start_fractal_trees...');
-          console.log('Available functions:', Object.keys(wasmModule));
+        console.log("Start button clicked!");
+        console.log("Framework:", framework);
+        console.log("WASM Module:", wasmModule);
+
+        if (framework === "macroquad" && wasmModule) {
+          console.log("Calling start_fractal_trees...");
+          console.log("Available functions:", Object.keys(wasmModule));
           wasmModule.start_fractal_trees();
-          console.log('start_fractal_trees called');
-        } else if (framework === 'raylib' && window.Module) {
-          window.Module.ccall('start_project', null, [], []);
+          console.log("start_fractal_trees called");
+        } else if (framework === "raylib" && window.Module) {
+          window.Module.ccall("start_project", null, [], []);
         } else {
-          console.error('Cannot start: framework=', framework, 'wasmModule=', wasmModule);
+          console.error(
+            "Cannot start: framework=",
+            framework,
+            "wasmModule=",
+            wasmModule
+          );
         }
       } catch (error) {
-        console.error('Error starting project:', error);
+        console.error("Error starting project:", error);
       }
     });
-    
-    stopBtn?.addEventListener('click', () => {
+
+    stopBtn?.addEventListener("click", () => {
       try {
-        if (framework === 'macroquad' && wasmModule) {
-          console.log('Stopping fractal trees');
+        if (framework === "macroquad" && wasmModule) {
+          console.log("Stopping fractal trees");
           wasmModule.stop_fractal_trees();
-        } else if (framework === 'raylib' && window.Module) {
-          window.Module.ccall('stop_project', null, [], []);
+        } else if (framework === "raylib" && window.Module) {
+          window.Module.ccall("stop_project", null, [], []);
         }
       } catch (error) {
-        console.error('Error stopping project:', error);
+        console.error("Error stopping project:", error);
       }
     });
-    
-    resetBtn?.addEventListener('click', () => {
-      document.querySelectorAll('[data-param]').forEach(control => {
-        const defaultValue = control.getAttribute('value');
+
+    resetBtn?.addEventListener("click", () => {
+      document.querySelectorAll("[data-param]").forEach((control) => {
+        const defaultValue = control.getAttribute("value");
         control.value = defaultValue;
         const valueSpan = document.getElementById(`${control.id}-value`);
         if (valueSpan) valueSpan.textContent = defaultValue;
       });
       updateParams();
     });
-    
+
     // Handle parameter updates
     function updateParams() {
       try {
         const params = {};
-        document.querySelectorAll('[data-param]').forEach(control => {
-          const value = control.type === 'checkbox' ? control.checked : 
-                       control.type === 'number' || control.type === 'range' ? 
-                       parseFloat(control.value) : control.value;
+        document.querySelectorAll("[data-param]").forEach((control) => {
+          const value =
+            control.type === "checkbox"
+              ? control.checked
+              : control.type === "number" || control.type === "range"
+                ? parseFloat(control.value)
+                : control.value;
           params[control.dataset.param] = value;
         });
-        
-        if (framework === 'macroquad' && wasmModule) {
-          console.log('Updating params:', params);
-          console.log('Calling update_fractal_params with:', 
+
+        if (framework === "macroquad" && wasmModule) {
+          console.log("Updating params:", params);
+          console.log(
+            "Calling update_fractal_params with:",
             params.iterations || 5,
             params.angle || 25,
             params.length || 100
@@ -207,192 +236,257 @@ const canvasId = `canvas-${project}`;
             params.angle || 25,
             params.length || 100
           );
-          console.log('Parameters updated successfully');
-        } else if (framework === 'raylib' && window.Module) {
-          window.Module.ccall('update_params', null, ['string'], [JSON.stringify(params)]);
+          console.log("Parameters updated successfully");
+        } else if (framework === "raylib" && window.Module) {
+          window.Module.ccall(
+            "update_params",
+            null,
+            ["string"],
+            [JSON.stringify(params)]
+          );
         } else {
-          console.error('Cannot update params: framework=', framework, 'wasmModule=', wasmModule);
+          console.error(
+            "Cannot update params: framework=",
+            framework,
+            "wasmModule=",
+            wasmModule
+          );
         }
       } catch (error) {
-        console.error('Error updating params:', error);
+        console.error("Error updating params:", error);
       }
     }
-    
-    document.querySelectorAll('[data-param]').forEach(control => {
+
+    document.querySelectorAll("[data-param]").forEach((control) => {
       // Initialize the value display
       const valueSpan = document.getElementById(`${control.id}-value`);
       if (valueSpan) valueSpan.textContent = control.value;
-      
-      control.addEventListener('input', (e) => {
+
+      control.addEventListener("input", (e) => {
         const valueSpan = document.getElementById(`${e.target.id}-value`);
         if (valueSpan) valueSpan.textContent = e.target.value;
         updateParams();
       });
     });
-    
+
     // Initialize with default parameters
     updateParams();
-    
+
     // Code modal functionality
     const codeBtn = document.getElementById(`code-${project}`);
     const codeModal = document.getElementById(`code-modal-${project}`);
     const closeBtn = document.getElementById(`close-code-${project}`);
-    
+
     if (codeBtn && codeModal) {
-      codeBtn.addEventListener('click', () => {
+      codeBtn.addEventListener("click", () => {
         // Apply syntax highlighting when modal opens
         const codeContent = document.getElementById(`code-content-${project}`);
-        
+
         if (codeContent && sourceCode) {
           codeContent.innerHTML = highlightSyntax(sourceCode, framework);
         }
-        codeModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        codeModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
       });
-      
+
       if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          codeModal.classList.add('hidden');
-          document.body.style.overflow = '';
+        closeBtn.addEventListener("click", () => {
+          codeModal.classList.add("hidden");
+          document.body.style.overflow = "";
         });
       }
-      
+
       // Close on backdrop click
-      codeModal.addEventListener('click', (e) => {
+      codeModal.addEventListener("click", (e) => {
         if (e.target === codeModal) {
-          codeModal.classList.add('hidden');
-          document.body.style.overflow = '';
+          codeModal.classList.add("hidden");
+          document.body.style.overflow = "";
         }
       });
-      
+
       // Close on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !codeModal.classList.contains('hidden')) {
-          codeModal.classList.add('hidden');
-          document.body.style.overflow = '';
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !codeModal.classList.contains("hidden")) {
+          codeModal.classList.add("hidden");
+          document.body.style.overflow = "";
         }
       });
     }
   }
-  
+
   // Simple syntax highlighter for monochrome theme
   function highlightSyntax(code, language) {
-    if (!code) return '';
-    
+    if (!code) return "";
+
     // Escape HTML first to prevent conflicts
     let highlighted = code
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    
-    if (language === 'macroquad') {
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    if (language === "macroquad") {
       // Rust syntax highlighting - order matters to prevent conflicts
-      
+
       // 1. Comments (do first to avoid interfering with other patterns)
       highlighted = highlighted.replace(
-        /(\/\/.*$)/gm, 
+        /(\/\/.*$)/gm,
         '<span class="syntax-comment">$1</span>'
       );
-      
+
       // 2. Strings (do early to avoid keyword conflicts inside strings)
       highlighted = highlighted.replace(
-        /("(?:[^"\\]|\\.)*")/g, 
+        /("(?:[^"\\]|\\.)*")/g,
         '<span class="syntax-string">$1</span>'
       );
-      
+
       // 3. Macros (before keywords to avoid conflicts)
       highlighted = highlighted.replace(
-        /\b(\w+!)(?!\s*<\/span>)/g, 
+        /\b(\w+!)(?!\s*<\/span>)/g,
         '<span class="syntax-macro">$1</span>'
       );
-      
+
       // 4. Keywords
       const rustKeywords = [
-        'use', 'pub', 'fn', 'let', 'mut', 'if', 'else', 'match', 'return', 
-        'unsafe', 'static', 'const', 'struct', 'enum', 'impl', 'trait',
-        'where', 'for', 'while', 'loop', 'break', 'continue', 'as', 'ref'
+        "use",
+        "pub",
+        "fn",
+        "let",
+        "mut",
+        "if",
+        "else",
+        "match",
+        "return",
+        "unsafe",
+        "static",
+        "const",
+        "struct",
+        "enum",
+        "impl",
+        "trait",
+        "where",
+        "for",
+        "while",
+        "loop",
+        "break",
+        "continue",
+        "as",
+        "ref",
       ];
-      
-      rustKeywords.forEach(keyword => {
-        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
-        highlighted = highlighted.replace(regex, '<span class="syntax-keyword">$1</span>');
+
+      rustKeywords.forEach((keyword) => {
+        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, "g");
+        highlighted = highlighted.replace(
+          regex,
+          '<span class="syntax-keyword">$1</span>'
+        );
       });
-      
+
       // 5. Types
-      const rustTypes = ['i32', 'f32', 'f64', 'usize', 'bool', 'Option', 'Some', 'None'];
-      rustTypes.forEach(type => {
-        const regex = new RegExp(`\\b(${type})\\b(?![^<]*<\/span>)`, 'g');
-        highlighted = highlighted.replace(regex, '<span class="syntax-type">$1</span>');
+      const rustTypes = [
+        "i32",
+        "f32",
+        "f64",
+        "usize",
+        "bool",
+        "Option",
+        "Some",
+        "None",
+      ];
+      rustTypes.forEach((type) => {
+        const regex = new RegExp(`\\b(${type})\\b(?![^<]*<\/span>)`, "g");
+        highlighted = highlighted.replace(
+          regex,
+          '<span class="syntax-type">$1</span>'
+        );
       });
-      
+
       // 6. Numbers (do last to avoid conflicts)
       highlighted = highlighted.replace(
-        /\b(\d+\.?\d*)(?![^<]*<\/span>)/g, 
+        /\b(\d+\.?\d*)(?![^<]*<\/span>)/g,
         '<span class="syntax-number">$1</span>'
       );
-      
-    } else if (language === 'raylib') {
-      // C++ syntax highlighting
-      
+    } else if (language === "raylib") {
+      // C syntax highlighting
+
       // 1. Comments
       highlighted = highlighted.replace(
-        /(\/\/.*$)/gm, 
+        /(\/\/.*$)/gm,
         '<span class="syntax-comment">$1</span>'
       );
       highlighted = highlighted.replace(
-        /(\/\*[\s\S]*?\*\/)/g, 
+        /(\/\*[\s\S]*?\*\/)/g,
         '<span class="syntax-comment">$1</span>'
       );
-      
+
       // 2. Strings
       highlighted = highlighted.replace(
-        /("(?:[^"\\]|\\.)*")/g, 
+        /("(?:[^"\\]|\\.)*")/g,
         '<span class="syntax-string">$1</span>'
       );
-      
+
       // 3. Preprocessor directives
       highlighted = highlighted.replace(
-        /(#\w+.*$)/gm, 
+        /(#\w+.*$)/gm,
         '<span class="syntax-preprocessor">$1</span>'
       );
-      
+
       // 4. Keywords
-      const cppKeywords = [
-        'int', 'float', 'double', 'char', 'bool', 'void', 'const', 'static',
-        'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
-        'return', 'break', 'continue', 'struct', 'class', 'extern'
+      const cKeywords = [
+        "int",
+        "float",
+        "double",
+        "char",
+        "void",
+        "const",
+        "static",
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "case",
+        "default",
+        "return",
+        "break",
+        "continue",
+        "struct",
+        "extern",
       ];
-      
-      cppKeywords.forEach(keyword => {
-        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
-        highlighted = highlighted.replace(regex, '<span class="syntax-keyword">$1</span>');
+
+      cKeywords.forEach((keyword) => {
+        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, "g");
+        highlighted = highlighted.replace(
+          regex,
+          '<span class="syntax-keyword">$1</span>'
+        );
       });
-      
+
       // 5. Numbers
       highlighted = highlighted.replace(
-        /\b(\d+\.?\d*f?)(?![^<]*<\/span>)/g, 
+        /\b(\d+\.?\d*f?)(?![^<]*<\/span>)/g,
         '<span class="syntax-number">$1</span>'
       );
     }
-    
+
     return highlighted;
   }
-  
+
   // Prevent multiple initializations
   let isInitialized = false;
-  
+
   async function safeInitialize() {
     if (isInitialized) return;
     isInitialized = true;
     await initializeWasm();
   }
-  
+
   // Try multiple initialization methods for compatibility
-  document.addEventListener('astro:page-load', safeInitialize);
-  document.addEventListener('DOMContentLoaded', safeInitialize);
-  
+  document.addEventListener("astro:page-load", safeInitialize);
+  document.addEventListener("DOMContentLoaded", safeInitialize);
+
   // Also try immediate initialization if DOM is already ready
-  if (document.readyState === 'loading') {
+  if (document.readyState === "loading") {
     // Still loading, wait for events
   } else {
     // DOM is ready
@@ -408,46 +502,46 @@ const canvasId = `canvas-${project}`;
     background: var(--background);
     font-family: "FiraCode", sans-serif;
   }
-  
+
   .canvas-wrapper {
     display: flex;
     justify-content: center;
     margin-bottom: var(--space-m);
   }
-  
+
   canvas {
     border: 1px solid var(--gray);
     background: var(--background);
   }
-  
+
   .controls {
     margin: var(--space-m) 0;
     padding: var(--space-s);
     border: 1px solid var(--gray);
     background: var(--background);
   }
-  
+
   .controls h3 {
     margin: 0 0 var(--space-s) 0;
     font-size: var(--step-0);
     font-weight: 700;
     color: var(--accent);
   }
-  
+
   .control-group {
     display: flex;
     align-items: center;
     gap: var(--space-s);
     margin-bottom: var(--space-xs);
   }
-  
+
   .control-group label {
     min-width: 80px;
     font-weight: 400;
     font-size: var(--step--1);
     color: var(--accent);
   }
-  
+
   .control-group input {
     flex: 1;
     max-width: 150px;
@@ -458,12 +552,12 @@ const canvasId = `canvas-${project}`;
     font-family: "FiraCode", sans-serif;
     font-size: var(--step--1);
   }
-  
+
   .control-group input:focus {
     outline: none;
     border-color: var(--accent);
   }
-  
+
   .control-value {
     min-width: 50px;
     padding: var(--space-3xs) var(--space-2xs);
@@ -473,13 +567,13 @@ const canvasId = `canvas-${project}`;
     font-size: var(--step--1);
     color: var(--gray);
   }
-  
+
   .project-actions {
     display: flex;
     gap: var(--space-xs);
     margin-top: var(--space-s);
   }
-  
+
   .btn {
     padding: var(--space-xs) var(--space-s);
     border: 1px solid var(--gray);
@@ -491,32 +585,32 @@ const canvasId = `canvas-${project}`;
     font-size: var(--step--1);
     transition: all 0.1s ease;
   }
-  
+
   .btn:hover {
     background: var(--accent);
     color: var(--background);
   }
-  
+
   .btn-primary {
     background: var(--accent);
     color: var(--background);
   }
-  
+
   .btn-primary:hover {
     background: var(--gray);
     color: var(--background);
   }
-  
+
   .btn-secondary {
     background: var(--background);
     color: var(--gray);
   }
-  
+
   .btn-secondary:hover {
     background: var(--gray);
     color: var(--background);
   }
-  
+
   /* Code Modal Styles */
   .code-modal {
     position: fixed;
@@ -531,11 +625,11 @@ const canvasId = `canvas-${project}`;
     z-index: 1000;
     padding: var(--space-m);
   }
-  
+
   .code-modal.hidden {
     display: none;
   }
-  
+
   .code-modal-content {
     background: var(--background);
     border: 1px solid var(--gray);
@@ -547,7 +641,7 @@ const canvasId = `canvas-${project}`;
     flex-direction: column;
     overflow: hidden;
   }
-  
+
   .code-header {
     display: flex;
     justify-content: space-between;
@@ -556,7 +650,7 @@ const canvasId = `canvas-${project}`;
     border-bottom: 1px solid var(--gray);
     background: var(--background);
   }
-  
+
   .code-header h3 {
     margin: 0;
     font-size: var(--step-0);
@@ -564,7 +658,7 @@ const canvasId = `canvas-${project}`;
     color: var(--accent);
     font-family: "FiraCode", sans-serif;
   }
-  
+
   .close-btn {
     background: none;
     border: none;
@@ -580,12 +674,12 @@ const canvasId = `canvas-${project}`;
     border-radius: 2px;
     transition: all 0.1s ease;
   }
-  
+
   .close-btn:hover {
     background: var(--gray);
     color: var(--background);
   }
-  
+
   .code-block {
     flex: 1;
     overflow: auto;
@@ -599,40 +693,40 @@ const canvasId = `canvas-${project}`;
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-  
+
   /* Monochrome Syntax Highlighting - Global styles */
   :global(.code-block .syntax-comment) {
     color: var(--dark-gray);
     opacity: 0.7;
     font-style: italic;
   }
-  
+
   :global(.code-block .syntax-string) {
     color: var(--accent);
     opacity: 0.9;
   }
-  
+
   :global(.code-block .syntax-keyword) {
     color: var(--accent);
     font-weight: 600;
   }
-  
+
   :global(.code-block .syntax-type) {
     color: var(--gray);
     font-weight: 500;
   }
-  
+
   :global(.code-block .syntax-macro) {
     color: var(--accent);
     font-weight: 500;
     opacity: 0.8;
   }
-  
+
   :global(.code-block .syntax-number) {
     color: var(--gray);
     opacity: 0.9;
   }
-  
+
   :global(.code-block .syntax-preprocessor) {
     color: var(--dark-gray);
     font-weight: 500;
@@ -643,7 +737,7 @@ const canvasId = `canvas-${project}`;
       width: 95vw;
       height: 90vh;
     }
-    
+
     .code-block {
       font-size: var(--step--2);
     }
