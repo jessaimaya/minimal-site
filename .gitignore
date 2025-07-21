@@ -1,24 +1,119 @@
-# build output
+# Build outputs
 dist/
-# generated types
+build/
+.output/
+.vercel/
+.netlify/
 .astro/
 
-# dependencies
+# Dependencies
 node_modules/
+package-lock.json
 
-# logs
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# environment variables
-.env
-.env.production
+# Coverage directory
+coverage/
+*.lcov
 
-# macOS-specific files
-.DS_Store
-
-# jetbrains setting folder
+# IDE and editor files
+.vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary directories and files
+tmp/
+temp/
+*.tmp
+*.temp
+tpull/
+tstatus/
+
+# Native project build artifacts (Rust)
+src/native/**/target/
+src/native/**/Cargo.lock
+
+# Native project build artifacts (C/Raylib)
+src/native/**/build/
+src/native/**/*.o
+src/native/**/*.so
+src/native/**/*.dll
+src/native/**/*.dylib
+src/native/**/*.exe
+src/native/**/*.out
+src/native/**/project.js
+src/native/**/project.wasm
+src/native/**/project.html
+
+# WebAssembly build outputs (keep source, ignore built files)
+public/dist/wasm/*/pkg/
+public/dist/wasm/*/*.js
+public/dist/wasm/*/*.wasm
+public/dist/wasm/*/*.ts
+public/dist/wasm/*/snippets/
+public/dist/wasm/*/.gitignore
+
+# But keep the directory structure for WASM outputs
+!public/dist/wasm/.gitkeep
+
+# Cache directories
+.cache/
+.parcel-cache/
+.vite/
+.npm
+.eslintcache
+.yarn-integrity
+.sharp/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Generated sitemaps and feeds
+public/sitemap.xml
+public/robots.txt
+public/rss.xml
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Sass
+.sass-cache/

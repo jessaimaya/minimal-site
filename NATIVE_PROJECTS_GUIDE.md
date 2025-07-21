@@ -14,8 +14,8 @@ Each project consists of:
 
 ### Rust (Macroquad/Canvas 2D)
 - **Location**: `src/native/macroquad/[project-name]/`
-- **Compiler**: wasm-pack
-- **API**: Canvas 2D via web-sys
+- **Compiler**: wasm-pack (for web), cargo (for native development)
+- **API**: Canvas 2D via web-sys (web), macroquad (native)
 
 ### C (Raylib)
 - **Location**: `src/native/raylib/[project-name]/`
@@ -160,6 +160,68 @@ EOF
 
 # Replace PROJECT_NAME placeholders
 sed -i "s/PROJECT_NAME/${PROJECT_NAME//-/_}/g" src/lib.rs
+
+# Create a native development version using macroquad
+cat > src/main.rs << 'EOF'
+use macroquad::prelude::*;
+
+// Parameters (same as WASM version)
+static mut PARAMS: (i32, f32, f32) = (5, 25.0, 100.0);
+
+#[macroquad::main("PROJECT_NAME")]
+async fn main() {
+    loop {
+        clear_background(BLACK);
+        
+        // Your graphics code here (same logic as draw_graphics in lib.rs)
+        unsafe {
+            let (param1, param2, param3) = PARAMS;
+            
+            // Example: draw a circle
+            draw_circle(screen_width() / 2.0, screen_height() / 2.0, param3, WHITE);
+        }
+        
+        // Handle input for parameter changes
+        if is_key_pressed(KeyCode::Key1) {
+            unsafe { PARAMS.0 = (PARAMS.0 % 20) + 1; }
+        }
+        if is_key_pressed(KeyCode::Key2) {
+            unsafe { PARAMS.1 = (PARAMS.1 + 5.0) % 100.0; }
+        }
+        if is_key_pressed(KeyCode::Key3) {
+            unsafe { PARAMS.2 = (PARAMS.2 + 10.0) % 500.0 + 10.0; }
+        }
+        
+        // Display controls
+        draw_text("Press 1/2/3 to change parameters", 10.0, 20.0, 20.0, WHITE);
+        draw_text(&format!("Param1: {} (Press 1)", unsafe { PARAMS.0 }), 10.0, 40.0, 20.0, WHITE);
+        draw_text(&format!("Param2: {:.1} (Press 2)", unsafe { PARAMS.1 }), 10.0, 60.0, 20.0, WHITE);
+        draw_text(&format!("Param3: {:.1} (Press 3)", unsafe { PARAMS.2 }), 10.0, 80.0, 20.0, WHITE);
+        
+        next_frame().await
+    }
+}
+EOF
+
+# Replace PROJECT_NAME in main.rs
+sed -i "s/PROJECT_NAME/${PROJECT_NAME}/g" src/main.rs
+
+# Update Cargo.toml to support both native and WASM builds
+cat >> Cargo.toml << 'EOF'
+
+# For native development
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[dependencies.macroquad]
+version = "0.4"
+optional = true
+
+[features]
+default = ["native"]
+native = ["macroquad"]
+EOF
 ```
 
 ### 3B. C Project Setup (Raylib)
@@ -300,10 +362,29 @@ Edit `src/pages/projects/[slug].astro` and add your project:
 )}
 ```
 
-### 6. Build and Test
+### 6. Local Development Workflow
+
+For rapid development and testing, use the native version first:
 
 ```bash
-# Build native projects
+# Navigate to your project directory
+cd "src/native/macroquad/${PROJECT_NAME}"
+
+# Run native version for development (fast iteration)
+cargo run
+
+# This opens a native window where you can:
+# - See changes instantly after cargo run
+# - Use keyboard controls (1/2/3 keys) to test parameters
+# - Develop and debug your graphics logic
+```
+
+### 7. Build and Deploy to Web
+
+Once you're happy with your native version, deploy to web:
+
+```bash
+# From project root, build WASM version
 ./build-native.sh
 
 # Start development server
@@ -391,12 +472,30 @@ The NativeCanvas component includes a "Show Code" button that displays the sourc
 
 The code is passed via the `sourceCode` prop and only shows the button if source code is available.
 
-## Tips
+## Development Tips
 
+### General
 - Start with the fractal trees project as a reference
 - Keep parameter validation (clamp values) in your native code
-- Use appropriate Canvas 2D or Raylib APIs for your graphics
 - Test controls work before adding complex graphics logic
 - Follow the existing minimal design aesthetic
 - The "Show Code" button appears automatically if source code is readable
+
+### Rust Projects
+- **Development workflow**: Use `cargo run` for fast iteration, then `./build-native.sh` for web deployment
+- **Code sharing**: Keep your graphics logic in separate functions that both `main.rs` and `lib.rs` can call
+- **Sync versions**: When you change graphics logic in `main.rs`, copy the same logic to the `draw_graphics()` function in `lib.rs`
+- **Parameter handling**: Use the same parameter ranges and validation in both versions
 - **Use safe Rust patterns**: Projects now use `thread_local!` with `RefCell` instead of `unsafe` blocks for better memory safety
+
+### Example Code Organization
+
+```rust
+// In src/graphics.rs (shared between main.rs and lib.rs)
+pub fn draw_scene(width: f32, height: f32, param1: i32, param2: f32, param3: f32) {
+    // Your graphics logic here
+    // This function works for both native macroquad and web canvas
+}
+```
+
+Then import and use in both `main.rs` (native) and `lib.rs` (WASM).
