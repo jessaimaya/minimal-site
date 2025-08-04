@@ -22,13 +22,18 @@ Each project consists of:
 - **Compiler**: emscripten
 - **API**: Raylib graphics library
 
+### TypeScript (Three.js)
+- **Location**: `src/native/threejs/[project-name]/`
+- **Compiler**: TypeScript/Vite
+- **API**: Three.js WebGL library
+
 ## Creating a New Project
 
 ### 1. Choose Framework and Project Name
 
 ```bash
 # Example: Rust project called "spiral-galaxy"
-FRAMEWORK="macroquad"  # or "raylib"
+FRAMEWORK="macroquad"  # or "raylib" or "threejs"
 PROJECT_NAME="spiral-galaxy"
 PROJECT_NUMBER="002"   # increment from last project
 ```
@@ -215,6 +220,164 @@ EOF
 sed -i "s/PROJECT_NAME/${PROJECT_NAME}/g" main.cpp
 ```
 
+### 3C. TypeScript Project Setup (Three.js)
+
+```bash
+# Create package.json
+cat > package.json << EOF
+{
+  "name": "${PROJECT_NAME}",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "@types/three": "^0.160.0"
+  }
+}
+EOF
+
+# Create tsconfig.json
+cat > tsconfig.json << EOF
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}
+EOF
+
+# Create vite.config.ts
+cat > vite.config.ts << EOF
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  build: {
+    outDir: '../../../../public/dist/wasm/${PROJECT_NAME}',
+    emptyOutDir: true,
+    lib: {
+      entry: 'src/main.ts',
+      name: '${PROJECT_NAME//-/_}',
+      fileName: 'main',
+      formats: ['iife']
+    }
+  }
+})
+EOF
+
+# Create src/main.ts with template
+mkdir src
+cat > src/main.ts << 'EOF'
+import * as THREE from 'three';
+
+// Global state
+let scene: THREE.Scene;
+let camera: THREE.PerspectiveCamera;
+let renderer: THREE.WebGLRenderer;
+let animationId: number | null = null;
+
+// Parameters
+let params = {
+    param1: 5,
+    param2: 25,
+    param3: 100
+};
+
+export function init_PROJECT_NAME(canvasId: string): void {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    if (!canvas) {
+        console.error('Canvas not found:', canvasId);
+        return;
+    }
+
+    // Setup scene
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    // Setup camera
+    const aspect = canvas.width / canvas.height;
+    camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+    camera.position.z = 5;
+
+    // Setup renderer
+    renderer = new THREE.WebGLRenderer({ canvas });
+    renderer.setSize(canvas.width, canvas.height);
+}
+
+export function start_PROJECT_NAME(): void {
+    if (animationId !== null) return;
+    
+    const animate = () => {
+        animationId = requestAnimationFrame(animate);
+        render();
+    };
+    
+    animate();
+}
+
+export function stop_PROJECT_NAME(): void {
+    if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}
+
+export function update_PROJECT_NAME_params(param1: number, param2: number, param3: number): void {
+    params.param1 = Math.max(1, Math.min(20, param1));
+    params.param2 = Math.max(0, Math.min(100, param2));
+    params.param3 = Math.max(10, Math.min(500, param3));
+    
+    updateGraphics();
+}
+
+function updateGraphics(): void {
+    // Clear existing objects
+    while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+    }
+
+    // Add your graphics here
+    const geometry = new THREE.SphereGeometry(params.param3 / 100);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+}
+
+function render(): void {
+    if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+    }
+}
+
+// Initialize graphics on first call
+updateGraphics();
+EOF
+
+# Replace PROJECT_NAME placeholders
+sed -i "s/PROJECT_NAME/${PROJECT_NAME//-/_}/g" src/main.ts
+```
+
 ### 4. Create Content Markdown
 
 ```bash
@@ -314,6 +477,13 @@ Your `main.cpp` must export these functions:
 - `stop_project()`
 - `update_params(param1, param2, ...)`
 
+### TypeScript Projects
+Your `main.ts` must export these functions:
+- `init_[project_name](canvasId: string)`
+- `start_[project_name]()`
+- `stop_[project_name]()`
+- `update_[project_name]_params(param1: number, param2: number, ...)`
+
 ## Control Types
 
 Available control types in project frontmatter:
@@ -350,6 +520,10 @@ controls:
 
 ### For C++ Projects  
 - Install emscripten: Follow [emscripten installation guide](https://emscripten.org/docs/getting_started/downloads.html)
+
+### For TypeScript Projects
+- Node.js and npm (included in main project)
+- Three.js will be installed per-project via npm
 
 ## Troubleshooting
 

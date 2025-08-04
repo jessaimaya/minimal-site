@@ -9,17 +9,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Preview build**: `npm run preview`
 - **Type checking**: `astro check` (included in build command)
 - **Native projects build**: `./build-native.sh` (automatically runs with dev/build commands)
+- **Individual builds**: `npm run build:macroquad` or `npm run build:raylib`
+- **Setup tools**: `npm run setup:tools` (installs emscripten and wasm-pack)
 
 ### Native Projects
 
-The site includes interactive WASM-based graphics projects built with Rust and C++:
+The site includes interactive graphics projects built with multiple technologies:
 
 - **Rust projects**: Located in `src/native/macroquad/` using wasm-pack for compilation
-- **C++ projects**: Located in `src/native/raylib/` using emscripten for compilation
+- **C++ projects**: Located in `src/native/raylib/` using emscripten for compilation  
+- **TypeScript projects**: Located in `src/native/threejs/` or embedded in other project dirs
+- **Multi-framework projects**: Single projects with multiple implementations (e.g., fractal-trees)
 - **Build output**: Compiled to `public/dist/wasm/[project-name]/`
 - **Requirements**: 
   - `wasm-pack` for Rust projects
   - `emscripten` for C++ projects (optional, skips if not installed)
+  - Node.js/npm for TypeScript projects
 
 ## Architecture Overview
 
@@ -41,11 +46,12 @@ The site uses Astro's content collections with three main types:
 - **MDX**: Supported for enhanced markdown content
 - **RSS**: Auto-generated RSS feed
 - **Sitemap**: Auto-generated sitemap
+- **Multi-framework projects**: Projects can include multiple implementations (Rust, C++, TypeScript) with tabbed interface
 
 ### File Structure
 
 - `src/layouts/`: Page layouts (BlogPost.astro, Studies.astro)
-- `src/components/`: Reusable Astro and React components including NativeCanvas.astro for WASM integration
+- `src/components/`: Reusable Astro and React components including NativeCanvas.astro for multi-framework WASM/JS integration
 - `src/pages/`: Route-based pages including dynamic routes for blog, studies, and projects
 - `src/content/`: Content collections (blog, studies, projects)
 - `src/native/`: Native project source code (Rust/C++) for WASM compilation

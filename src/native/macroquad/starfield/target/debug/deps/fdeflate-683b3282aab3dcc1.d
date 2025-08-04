@@ -1,0 +1,11 @@
+/home/jessai/Code/minimal-site/src/native/macroquad/starfield/target/debug/deps/libfdeflate-683b3282aab3dcc1.rmeta: /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/jessai/Code/minimal-site/src/native/macroquad/starfield/target/debug/deps/libfdeflate-683b3282aab3dcc1.rlib: /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/jessai/Code/minimal-site/src/native/macroquad/starfield/target/debug/deps/fdeflate-683b3282aab3dcc1.d: /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs
+
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/lib.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/compress.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/decompress.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/huffman.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/fdeflate-0.3.7/src/tables.rs:

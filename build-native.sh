@@ -47,4 +47,47 @@ for dir in */; do
 done
 cd ../../..
 
+# Build Three.js projects (standalone)
+echo "Building standalone Three.js projects..."
+if [ -d "src/native/threejs" ]; then
+    cd src/native/threejs
+    for dir in */; do
+        if [ -d "$dir" ]; then
+            echo "Building Three.js project: $dir"
+            cd "$dir"
+            if [ -f "package.json" ]; then
+                if command -v npm >/dev/null 2>&1; then
+                    npm install
+                    npm run build
+                    echo "✅ Built $dir successfully"
+                else
+                    echo "❌ npm not found, skipping $dir"
+                fi
+            else
+                echo "❌ package.json not found in $dir, skipping"
+            fi
+            cd ..
+        fi
+    done
+    cd ../../..
+fi
+
+# Build embedded Three.js projects (in other framework directories)
+echo "Building embedded Three.js projects..."
+find src/native -name "threejs" -type d | while read threejs_dir; do
+    if [ -f "$threejs_dir/package.json" ]; then
+        echo "Building embedded Three.js project: $threejs_dir"
+        original_dir=$(pwd)
+        cd "$threejs_dir"
+        if command -v npm >/dev/null 2>&1; then
+            npm install > /dev/null 2>&1
+            npm run build
+            echo "✅ Built embedded Three.js project successfully"
+        else
+            echo "❌ npm not found, skipping embedded project"
+        fi
+        cd "$original_dir"
+    fi
+done
+
 echo "Native build process completed!"
