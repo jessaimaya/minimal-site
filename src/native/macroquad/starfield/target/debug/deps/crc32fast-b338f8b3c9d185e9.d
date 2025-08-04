@@ -1,0 +1,10 @@
+/home/jessai/Code/minimal-site/src/native/macroquad/starfield/target/debug/deps/libcrc32fast-b338f8b3c9d185e9.rmeta: /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/lib.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/baseline.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/combine.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/mod.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/table.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/pclmulqdq.rs
+
+/home/jessai/Code/minimal-site/src/native/macroquad/starfield/target/debug/deps/crc32fast-b338f8b3c9d185e9.d: /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/lib.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/baseline.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/combine.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/mod.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/table.rs /home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/pclmulqdq.rs
+
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/lib.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/baseline.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/combine.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/mod.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/table.rs:
+/home/jessai/.cargo/registry/src/index.crates.io-6f17d22bba15001f/crc32fast-1.5.0/src/specialized/pclmulqdq.rs:

@@ -1,0 +1,824 @@
+---
+import { getFrameworkSourceCode } from '../utils/sourceCodeLoader.ts';
+
+export interface Props {
+  project: string;
+  frameworks: Array<{
+    name: 'macroquad' | 'raylib' | 'threejs';
+    displayName: string;
+    sourceCode?: string | undefined;
+    sourceFile?: string | undefined;
+  }>;
+  width: number;
+  height: number;
+  controls?: Array<{
+    name: string;
+    type: 'range' | 'number' | 'color' | 'checkbox';
+    min?: number | undefined;
+    max?: number | undefined;
+    step?: number | undefined;
+    default?: any;
+  }> | undefined;
+}
+
+const { project, frameworks, width, height, controls = [] } = Astro.props;
+const canvasId = `canvas-${project}`;
+
+// Load source code for each framework
+const frameworksWithCode = frameworks.map(fw => ({
+  ...fw,
+  sourceCode: getFrameworkSourceCode(fw, project) || fw.sourceCode || ''
+}));
+---
+
+<div class="native-canvas-container">
+  <!-- Framework Tabs -->
+  <div class="framework-tabs">
+    {frameworks.map((fw, index) => (
+      <button 
+        class={`tab-button ${index === 0 ? 'active' : ''}`}
+        data-framework={fw.name}
+        data-project={project}
+      >
+        {fw.displayName}
+      </button>
+    ))}
+  </div>
+
+  <!-- Canvas Container -->
+  <div class="canvas-wrapper">
+    <canvas 
+      id={canvasId}
+      width={width} 
+      height={height}
+      data-project={project}
+    ></canvas>
+  </div>
+  
+  <!-- Controls -->
+  {controls.length > 0 && (
+    <div class="controls">
+      <h3>Controls</h3>
+      {controls.map(control => (
+        <div class="control-group">
+          <label for={`${project}-${control.name}`}>
+            {control.name}
+          </label>
+          <input 
+            type={control.type}
+            id={`${project}-${control.name}`}
+            data-param={control.name}
+            min={control.min}
+            max={control.max}
+            step={control.step}
+            value={control.default}
+          />
+          <span class="control-value" id={`${project}-${control.name}-value`}>
+            {control.default}
+          </span>
+        </div>
+      ))}
+    </div>
+  )}
+  
+  <!-- Project Actions -->
+  <div class="project-actions">
+    <button id={`start-${project}`} class="btn btn-primary">Start</button>
+    <button id={`stop-${project}`} class="btn btn-secondary">Stop</button>
+    <button id={`reset-${project}`} class="btn btn-secondary">Reset</button>
+    <button id={`code-${project}`} class="btn btn-secondary">Show Code</button>
+  </div>
+  
+  <!-- Code Modal -->
+  <div id={`code-modal-${project}`} class="code-modal hidden">
+    <div class="code-modal-content">
+      <div class="code-header">
+        <h3 id={`code-title-${project}`}>Source Code</h3>
+        <button id={`close-code-${project}`} class="close-btn">&times;</button>
+      </div>
+      <pre class="code-block"><code id={`code-content-${project}`}></code></pre>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ project, frameworks: frameworksWithCode, canvasId }}>
+  let currentFramework = frameworks[0].name;
+  let currentModule = null;
+  let isRunning = false;
+  
+  // Load framework module
+  async function loadFramework(frameworkName) {
+    const canvas = document.getElementById(canvasId);
+    
+    if (!canvas) {
+      console.error('Canvas not found!');
+      return;
+    }
+
+    try {
+      console.log('Loading framework:', frameworkName);
+      
+      if (frameworkName === 'macroquad') {
+        // Load Rust/WASM module
+        const moduleFileName = project.replace(/-/g, '_');
+        const module = await import(`/dist/wasm/${project}/${moduleFileName}.js`);
+        await module.default();
+        currentModule = module;
+        
+        // Initialize with canvas
+        if (typeof currentModule.init_fractal_trees === 'function') {
+          currentModule.init_fractal_trees(canvasId);
+        }
+        
+      } else if (frameworkName === 'raylib') {
+        // Load C++/Raylib WASM module
+        const script = document.createElement('script');
+        script.src = `/dist/wasm/${project}/${project}.js`;
+        document.head.appendChild(script);
+        
+        await new Promise(resolve => {
+          script.onload = resolve;
+        });
+        currentModule = window.Module;
+        
+      } else if (frameworkName === 'threejs') {
+        // Load TypeScript/Three.js module
+        await import(`/dist/wasm/${project}/threejs/main.iife.js`);
+        
+        // The IIFE creates a global variable fractal_trees_threejs
+        const globalVar = `${project.replace(/-/g, '_')}_threejs`;
+        currentModule = window[globalVar];
+        
+        // Initialize Three.js scene
+        const functionName = `init_${project.replace(/-/g, '_')}_threejs`;
+        if (currentModule && typeof currentModule[functionName] === 'function') {
+          currentModule[functionName](canvasId);
+        }
+      }
+      
+      console.log('Framework loaded successfully:', frameworkName);
+      
+    } catch (error) {
+      console.error('Failed to load framework:', frameworkName, error);
+    }
+  }
+  // Start project
+  function startProject() {
+    try {
+      if (!currentModule) return;
+      
+      if (currentFramework === 'macroquad') {
+        if (typeof currentModule.start_fractal_trees === 'function') {
+          currentModule.start_fractal_trees();
+          isRunning = true;
+        }
+      } else if (currentFramework === 'raylib') {
+        if (window.Module && window.Module.ccall) {
+          window.Module.ccall('start_project', null, [], []);
+          isRunning = true;
+        }
+      } else if (currentFramework === 'threejs') {
+        const functionName = `start_${project.replace(/-/g, '_')}_threejs`;
+        if (currentModule && typeof currentModule[functionName] === 'function') {
+          currentModule[functionName]();
+          isRunning = true;
+        }
+      }
+    } catch (error) {
+      console.error('Error starting project:', error);
+    }
+  }
+  
+  // Stop project
+  function stopProject() {
+    try {
+      if (!currentModule) return;
+      
+      if (currentFramework === 'macroquad') {
+        if (typeof currentModule.stop_fractal_trees === 'function') {
+          currentModule.stop_fractal_trees();
+          isRunning = false;
+        }
+      } else if (currentFramework === 'raylib') {
+        if (window.Module && window.Module.ccall) {
+          window.Module.ccall('stop_project', null, [], []);
+          isRunning = false;
+        }
+      } else if (currentFramework === 'threejs') {
+        const functionName = `stop_${project.replace(/-/g, '_')}_threejs`;
+        if (currentModule && typeof currentModule[functionName] === 'function') {
+          currentModule[functionName]();
+          isRunning = false;
+        }
+      }
+    } catch (error) {
+      console.error('Error stopping project:', error);
+    }
+  }
+  
+  // Update parameters
+  function updateParams() {
+    try {
+      if (!currentModule) return;
+      
+      const params = {};
+      document.querySelectorAll('[data-param]').forEach(control => {
+        const value = control.type === 'checkbox' ? control.checked : 
+                     control.type === 'number' || control.type === 'range' ? 
+                     parseFloat(control.value) : control.value;
+        params[control.dataset.param] = value;
+      });
+      
+      if (currentFramework === 'macroquad') {
+        if (typeof currentModule.update_fractal_params === 'function') {
+          currentModule.update_fractal_params(
+            params.iterations || 5,
+            params.angle || 25,
+            params.length || 100
+          );
+        }
+      } else if (currentFramework === 'raylib') {
+        if (window.Module && window.Module.ccall) {
+          window.Module.ccall('update_params', null, ['string'], [JSON.stringify(params)]);
+        }
+      } else if (currentFramework === 'threejs') {
+        const functionName = `update_${project.replace(/-/g, '_')}_threejs_params`;
+        if (currentModule && typeof currentModule[functionName] === 'function') {
+          currentModule[functionName](
+            params.iterations || 5,
+            params.angle || 25,
+            params.length || 100
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error updating params:', error);
+    }
+  }
+  
+  // Clean up canvas for framework switching
+  function cleanupCanvas() {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    
+    // Clear the canvas completely
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    // Try to lose WebGL context to free resources
+    try {
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') || canvas.getContext('webgl2');
+      if (gl) {
+        const ext = gl.getExtension('WEBGL_lose_context');
+        if (ext) {
+          ext.loseContext();
+        }
+      }
+    } catch (e) {
+      console.warn('Could not lose WebGL context:', e);
+    }
+    
+    // Create a completely new canvas element
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = canvasId;
+    newCanvas.width = canvas.width;
+    newCanvas.height = canvas.height;
+    newCanvas.dataset.project = canvas.dataset.project;
+    newCanvas.className = canvas.className;
+    newCanvas.style.cssText = canvas.style.cssText;
+    
+    // Replace the old canvas
+    canvas.parentNode.replaceChild(newCanvas, canvas);
+  }
+  
+  // Initialize component
+  async function initialize() {
+    // Load initial framework
+    await loadFramework(currentFramework);
+    
+    // Setup tab buttons
+    document.querySelectorAll(`[data-project="${project}"]`).forEach(tabBtn => {
+      tabBtn.addEventListener('click', async () => {
+        const frameworkName = tabBtn.dataset.framework;
+        
+        // Stop current project if running
+        if (isRunning) {
+          stopProject();
+        }
+        
+        // Clean up canvas for framework switch
+        cleanupCanvas();
+        
+        // Update active tab
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        tabBtn.classList.add('active');
+        
+        // Switch framework
+        currentFramework = frameworkName;
+        currentModule = null;
+        
+        // Small delay to ensure canvas is ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Load new framework
+        await loadFramework(frameworkName);
+        
+        // Update parameters for new framework
+        updateParams();
+      });
+    });
+    
+    // Setup control buttons
+    const startBtn = document.getElementById(`start-${project}`);
+    const stopBtn = document.getElementById(`stop-${project}`);
+    const resetBtn = document.getElementById(`reset-${project}`);
+    
+    startBtn?.addEventListener('click', startProject);
+    stopBtn?.addEventListener('click', stopProject);
+    resetBtn?.addEventListener('click', () => {
+      document.querySelectorAll('[data-param]').forEach(control => {
+        const defaultValue = control.getAttribute('value');
+        control.value = defaultValue;
+        const valueSpan = document.getElementById(`${control.id}-value`);
+        if (valueSpan) valueSpan.textContent = defaultValue;
+      });
+      updateParams();
+    });
+    
+    // Setup parameter controls
+    document.querySelectorAll('[data-param]').forEach(control => {
+      const valueSpan = document.getElementById(`${control.id}-value`);
+      if (valueSpan) valueSpan.textContent = control.value;
+      
+      control.addEventListener('input', (e) => {
+        const valueSpan = document.getElementById(`${e.target.id}-value`);
+        if (valueSpan) valueSpan.textContent = e.target.value;
+        updateParams();
+      });
+    });
+    
+    // Setup code modal
+    setupCodeModal();
+    
+    // Initialize with default parameters
+    updateParams();
+  }
+  
+  // Code modal functionality
+  function setupCodeModal() {
+    const codeBtn = document.getElementById(`code-${project}`);
+    const codeModal = document.getElementById(`code-modal-${project}`);
+    const closeBtn = document.getElementById(`close-code-${project}`);
+    const codeTitle = document.getElementById(`code-title-${project}`);
+    
+    if (codeBtn && codeModal) {
+      codeBtn.addEventListener('click', () => {
+        const currentFrameworkData = frameworks.find(fw => fw.name === currentFramework);
+        const sourceCode = currentFrameworkData?.sourceCode;
+        
+        if (sourceCode) {
+          const codeContent = document.getElementById(`code-content-${project}`);
+          const languageName = currentFramework === 'macroquad' ? 'Rust' : 
+                              currentFramework === 'raylib' ? 'C++' : 'TypeScript';
+          
+          codeTitle.textContent = `Source Code (${languageName})`;
+          codeContent.innerHTML = highlightSyntax(sourceCode, currentFramework);
+          
+          codeModal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          codeModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        });
+      }
+      
+      codeModal.addEventListener('click', (e) => {
+        if (e.target === codeModal) {
+          codeModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !codeModal.classList.contains('hidden')) {
+          codeModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  }
+  
+  // Simple syntax highlighter for monochrome theme
+  function highlightSyntax(code, language) {
+    if (!code) return '';
+    
+    // Escape HTML first to prevent conflicts
+    let highlighted = code
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    
+    if (language === 'macroquad') {
+      // Rust syntax highlighting
+      highlighted = highlighted.replace(/(\/\/.*$)/gm, '<span class="syntax-comment">$1</span>');
+      highlighted = highlighted.replace(/("(?:[^"\\]|\\.)*")/g, '<span class="syntax-string">$1</span>');
+      highlighted = highlighted.replace(/\b(\w+!)(?!\s*<\/span>)/g, '<span class="syntax-macro">$1</span>');
+      
+      const rustKeywords = ['use', 'pub', 'fn', 'let', 'mut', 'if', 'else', 'match', 'return', 'unsafe', 'static', 'const'];
+      rustKeywords.forEach(keyword => {
+        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
+        highlighted = highlighted.replace(regex, '<span class="syntax-keyword">$1</span>');
+      });
+      
+      const rustTypes = ['i32', 'f32', 'f64', 'usize', 'bool', 'Option', 'Some', 'None'];
+      rustTypes.forEach(type => {
+        const regex = new RegExp(`\\b(${type})\\b(?![^<]*<\/span>)`, 'g');
+        highlighted = highlighted.replace(regex, '<span class="syntax-type">$1</span>');
+      });
+      
+      highlighted = highlighted.replace(/\b(\d+\.?\d*)(?![^<]*<\/span>)/g, '<span class="syntax-number">$1</span>');
+      
+    } else if (language === 'raylib') {
+      // C++ syntax highlighting
+      
+      // 1. Comments
+      highlighted = highlighted.replace(
+        /(\/\/.*$)/gm, 
+        '<span class="syntax-comment">$1</span>'
+      );
+      highlighted = highlighted.replace(
+        /(\/\*[\s\S]*?\*\/)/g, 
+        '<span class="syntax-comment">$1</span>'
+      );
+      
+      // 2. Strings
+      highlighted = highlighted.replace(
+        /("(?:[^"\\]|\\.)*")/g, 
+        '<span class="syntax-string">$1</span>'
+      );
+      
+      // 3. Preprocessor directives
+      highlighted = highlighted.replace(
+        /(#\w+.*$)/gm, 
+        '<span class="syntax-preprocessor">$1</span>'
+      );
+      
+      // 4. Keywords
+      const cppKeywords = [
+        'int', 'float', 'double', 'char', 'bool', 'void', 'const', 'static',
+        'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default',
+        'return', 'break', 'continue', 'struct', 'class', 'extern'
+      ];
+      
+      cppKeywords.forEach(keyword => {
+        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
+        highlighted = highlighted.replace(regex, '<span class="syntax-keyword">$1</span>');
+      });
+      
+      // 5. Numbers
+      highlighted = highlighted.replace(
+        /\b(\d+\.?\d*f?)(?![^<]*<\/span>)/g, 
+        '<span class="syntax-number">$1</span>'
+      );
+      
+    } else if (language === 'threejs') {
+      // TypeScript syntax highlighting
+      highlighted = highlighted.replace(/(\/\/.*$)/gm, '<span class="syntax-comment">$1</span>');
+      highlighted = highlighted.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="syntax-comment">$1</span>');
+      highlighted = highlighted.replace(/('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)/g, '<span class="syntax-string">$1</span>');
+      
+      const tsKeywords = ['import', 'export', 'function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'class', 'interface', 'type'];
+      tsKeywords.forEach(keyword => {
+        const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
+        highlighted = highlighted.replace(regex, '<span class="syntax-keyword">$1</span>');
+      });
+      
+      const tsTypes = ['number', 'string', 'boolean', 'void', 'any', 'null', 'undefined'];
+      tsTypes.forEach(type => {
+        const regex = new RegExp(`\\b(${type})\\b(?![^<]*<\/span>)`, 'g');
+        highlighted = highlighted.replace(regex, '<span class="syntax-type">$1</span>');
+      });
+      
+      highlighted = highlighted.replace(/\b(\d+\.?\d*)(?![^<]*<\/span>)/g, '<span class="syntax-number">$1</span>');
+    }
+    
+    return highlighted;
+  }
+  
+  // Prevent multiple initializations
+  let isInitialized = false;
+  
+  async function safeInitialize() {
+    if (isInitialized) return;
+    isInitialized = true;
+    await initialize();
+  }
+  
+  // Try multiple initialization methods for compatibility
+  document.addEventListener('astro:page-load', safeInitialize);
+  document.addEventListener('DOMContentLoaded', safeInitialize);
+  
+  // Also try immediate initialization if DOM is already ready
+  if (document.readyState === 'loading') {
+    // Still loading, wait for events
+  } else {
+    // DOM is ready
+    setTimeout(safeInitialize, 100);
+  }
+</script>
+
+<style>
+  .native-canvas-container {
+    margin: var(--space-l) 0;
+    padding: var(--space-m);
+    border: 1px solid var(--gray);
+    background: var(--background);
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .framework-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: var(--space-m);
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  .tab-button {
+    padding: var(--space-xs) var(--space-s);
+    border: 1px solid var(--gray);
+    border-bottom: none;
+    background: var(--background);
+    color: var(--gray);
+    cursor: pointer;
+    font-weight: 400;
+    font-family: "FiraCode", sans-serif;
+    font-size: var(--step--1);
+    transition: all 0.1s ease;
+    margin-bottom: -1px;
+  }
+  
+  .tab-button:hover {
+    background: var(--accent);
+    color: var(--background);
+  }
+  
+  .tab-button.active {
+    background: var(--accent);
+    color: var(--background);
+    border-bottom: 1px solid var(--accent);
+  }
+  
+  .tab-button:first-child {
+    border-radius: 4px 0 0 0;
+  }
+  
+  .tab-button:last-child {
+    border-radius: 0 4px 0 0;
+  }
+  
+  .canvas-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-m);
+  }
+  
+  canvas {
+    border: 1px solid var(--gray);
+    background: var(--background);
+  }
+  
+  .controls {
+    margin: var(--space-m) 0;
+    padding: var(--space-s);
+    border: 1px solid var(--gray);
+    background: var(--background);
+  }
+  
+  .controls h3 {
+    margin: 0 0 var(--space-s) 0;
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--accent);
+  }
+  
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .control-group label {
+    min-width: 80px;
+    font-weight: 400;
+    font-size: var(--step--1);
+    color: var(--accent);
+  }
+  
+  .control-group input {
+    flex: 1;
+    max-width: 150px;
+    padding: var(--space-3xs);
+    border: 1px solid var(--gray);
+    background: var(--background);
+    color: var(--accent);
+    font-family: "FiraCode", sans-serif;
+    font-size: var(--step--1);
+  }
+  
+  .control-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  
+  .control-value {
+    min-width: 50px;
+    padding: var(--space-3xs) var(--space-2xs);
+    background: var(--background);
+    border: 1px solid var(--gray);
+    font-family: "FiraCode", sans-serif;
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+  
+  .project-actions {
+    display: flex;
+    gap: var(--space-xs);
+    margin-top: var(--space-s);
+  }
+  
+  .btn {
+    padding: var(--space-xs) var(--space-s);
+    border: 1px solid var(--gray);
+    background: var(--background);
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 400;
+    font-family: "FiraCode", sans-serif;
+    font-size: var(--step--1);
+    transition: all 0.1s ease;
+  }
+  
+  .btn:hover {
+    background: var(--accent);
+    color: var(--background);
+  }
+  
+  .btn-primary {
+    background: var(--accent);
+    color: var(--background);
+  }
+  
+  .btn-primary:hover {
+    background: var(--gray);
+    color: var(--background);
+  }
+  
+  .btn-secondary {
+    background: var(--background);
+    color: var(--gray);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--gray);
+    color: var(--background);
+  }
+  
+  /* Code Modal Styles */
+  .code-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--space-m);
+  }
+  
+  .code-modal.hidden {
+    display: none;
+  }
+  
+  .code-modal-content {
+    background: var(--background);
+    border: 1px solid var(--gray);
+    border-radius: 4px;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-s) var(--space-m);
+    border-bottom: 1px solid var(--gray);
+    background: var(--background);
+  }
+  
+  .code-header h3 {
+    margin: 0;
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--accent);
+    font-family: "FiraCode", sans-serif;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: var(--step-2);
+    color: var(--gray);
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: all 0.1s ease;
+  }
+  
+  .close-btn:hover {
+    background: var(--gray);
+    color: var(--background);
+  }
+  
+  .code-block {
+    flex: 1;
+    overflow: auto;
+    padding: var(--space-m);
+    margin: 0;
+    background: var(--background);
+    font-family: "FiraCode", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--accent);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  /* Monochrome Syntax Highlighting - Global styles */
+  :global(.code-block .syntax-comment) {
+    color: var(--dark-gray);
+    opacity: 0.7;
+    font-style: italic;
+  }
+  
+  :global(.code-block .syntax-string) {
+    color: var(--accent);
+    opacity: 0.9;
+  }
+  
+  :global(.code-block .syntax-keyword) {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  
+  :global(.code-block .syntax-type) {
+    color: var(--gray);
+    font-weight: 500;
+  }
+  
+  :global(.code-block .syntax-macro) {
+    color: var(--accent);
+    font-weight: 500;
+    opacity: 0.8;
+  }
+  
+  :global(.code-block .syntax-number) {
+    color: var(--gray);
+    opacity: 0.9;
+  }
+  
+  :global(.code-block .syntax-preprocessor) {
+    color: var(--dark-gray);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .code-modal-content {
+      width: 95vw;
+      height: 90vh;
+    }
+    
+    .code-block {
+      font-size: var(--step--2);
+    }
+  }
+</style>

@@ -16,14 +16,14 @@ import HeaderLink from "./HeaderLink.astro";
     </div>
     <div class="internal-links">
       <HeaderLink href="/" title="Home">Home</HeaderLink>
-      <!-- <HeaderLink href="/projects" title="Projects">Projects</HeaderLink>
-      <HeaderLink href="/blog" title="Articles">Articles</HeaderLink> -->
+      <HeaderLink href="/projects" title="Projects">Projects</HeaderLink>
+      <!-- <HeaderLink href="/blog" title="Articles">Articles</HeaderLink> -->
     </div>
     <div class="menu-list" id="menu-list">
       <button class="close-btn" id="close-btn">&times;</button>
       <HeaderLink href="/" title="Home">Home</HeaderLink>
-      <!-- <HeaderLink href="/projects" title="Projects">Projects</HeaderLink>
-      <HeaderLink href="/blog" title="Articles">Articles</HeaderLink> -->
+      <HeaderLink href="/projects" title="Projects">Projects</HeaderLink>
+      <!-- <HeaderLink href="/blog" title="Articles">Articles</HeaderLink> -->
     </div><div class="theme">
       <div class="theme-switch" id="theme-switcher">
         <div class="fill"></div>
@@ -173,57 +173,91 @@ import HeaderLink from "./HeaderLink.astro";
 </style>
 <!-- Theme Switcher -->
 <script is:inline>
-  const themeSwitcher = document.getElementById("theme-switcher");
-  let currentTheme = localStorage.getItem("theme");
-  const enableTheme = (theme) => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  };
-  switch (currentTheme) {
-    case "light":
-      enableTheme("light");
-      break;
-    case "dark":
-      enableTheme("dark");
-      break;
-    default:
-      enableTheme("light");
-      break;
-  }
-  themeSwitcher.addEventListener("click", () => {
-    if (document.documentElement.hasAttribute("data-theme")) {
-      currentTheme = document.documentElement.getAttribute("data-theme");
-    }
+  // Check if theme system is already initialized
+  if (!window.themeInitialized) {
+    window.themeInitialized = true;
+    
+    const enableTheme = (theme) => {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+    };
+    
+    // Initialize theme
+    const currentTheme = localStorage.getItem("theme");
     switch (currentTheme) {
       case "light":
-        enableTheme("dark");
+        enableTheme("light");
         break;
       case "dark":
+        enableTheme("dark");
+        break;
       default:
         enableTheme("light");
         break;
     }
-  });
-  document
-    .getElementById("hamburger-menu")
-    .addEventListener("click", function () {
-      const menuList = document.getElementById("menu-list");
-      menuList.classList.toggle("show");
-    });
-
-  document.getElementById("close-btn").addEventListener("click", function () {
-    const menuList = document.getElementById("menu-list");
-    menuList.classList.remove("show");
-  });
-
-  document.addEventListener("click", function (event) {
-    const menuList = document.getElementById("menu-list");
+    
+    // Store theme functions globally
+    window.enableTheme = enableTheme;
+  }
+  
+  // Set up this specific theme switcher
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitcher = document.getElementById("theme-switcher");
+    if (themeSwitcher && !themeSwitcher.dataset.initialized) {
+      themeSwitcher.dataset.initialized = "true";
+      
+      themeSwitcher.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        switch (currentTheme) {
+          case "light":
+            window.enableTheme("dark");
+            break;
+          case "dark":
+          default:
+            window.enableTheme("light");
+            break;
+        }
+      });
+    }
+    
+    // Set up hamburger menu (only once)
     const hamburgerMenu = document.getElementById("hamburger-menu");
-    if (
-      !menuList.contains(event.target) &&
-      !hamburgerMenu.contains(event.target)
-    ) {
-      menuList.classList.remove("show");
+    const closeBtn = document.getElementById("close-btn");
+    
+    if (hamburgerMenu && !hamburgerMenu.dataset.initialized) {
+      hamburgerMenu.dataset.initialized = "true";
+      
+      hamburgerMenu.addEventListener("click", function () {
+        const menuList = document.getElementById("menu-list");
+        menuList.classList.toggle("show");
+      });
+    }
+    
+    if (closeBtn && !closeBtn.dataset.initialized) {
+      closeBtn.dataset.initialized = "true";
+      
+      closeBtn.addEventListener("click", function () {
+        const menuList = document.getElementById("menu-list");
+        menuList.classList.remove("show");
+      });
+    }
+    
+    // Document click handler (only add once)
+    if (!document.body.dataset.clickHandlerInitialized) {
+      document.body.dataset.clickHandlerInitialized = "true";
+      
+      document.addEventListener("click", function (event) {
+        const menuList = document.getElementById("menu-list");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        if (
+          menuList &&
+          hamburgerMenu &&
+          !menuList.contains(event.target) &&
+          !hamburgerMenu.contains(event.target)
+        ) {
+          menuList.classList.remove("show");
+        }
+      });
     }
   });
 </script>
