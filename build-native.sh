@@ -28,24 +28,28 @@ cd ../../..
 
 # Build Raylib projects (optional)
 echo "Building Raylib projects..."
-cd src/native/raylib
-for dir in */; do
-    if [ -d "$dir" ]; then
-        echo "Building Raylib project: $dir"
-        cd "$dir"
-        if command -v emcmake >/dev/null 2>&1; then
-            emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release
-            emmake make -C build
-            mkdir -p ../../../../public/dist/wasm/"$dir"
-            cp build/*.js build/*.wasm ../../../../public/dist/wasm/"$dir"/ 2>/dev/null
-            echo "✅ Built $dir successfully"
-        else
-            echo "❌ emscripten not found, skipping $dir"
+if [ -d "src/native/raylib" ]; then
+    cd src/native/raylib
+    for dir in */; do
+        if [ -d "$dir" ]; then
+            echo "Building Raylib project: $dir"
+            cd "$dir"
+            if command -v emcmake >/dev/null 2>&1; then
+                emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release
+                emmake make -C build
+                mkdir -p ../../../../public/dist/wasm/"$dir"
+                cp build/*.js build/*.wasm ../../../../public/dist/wasm/"$dir"/ 2>/dev/null
+                echo "✅ Built $dir successfully"
+            else
+                echo "❌ emscripten not found, skipping $dir"
+            fi
+            cd ..
         fi
-        cd ..
-    fi
-done
-cd ../../..
+    done
+    cd ../../..
+else
+    echo "❌ src/native/raylib directory not found, skipping Raylib projects"
+fi
 
 # Build Three.js projects (standalone)
 echo "Building standalone Three.js projects..."
