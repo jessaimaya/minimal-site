@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "./build-native.sh && astro dev",
     "start": "astro dev",
-    "build": "npm run build:native && astro check && astro build",
+    "build": "./build-native.sh && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "build:native": "npm run build:macroquad && npm run build:raylib && npm run build:threejs",
     "build:macroquad": "cd src/native/macroquad && for dir in */; do echo \"Building Macroquad project: $dir\" && cd \"$dir\" && ~/.cargo/bin/wasm-pack build --target web --out-dir ../../../../public/dist/wasm/\"$dir\" || echo \"Failed to build $dir - wasm-pack not available\" && cd ..; done",
-    "build:raylib": "cd src/native/raylib && for dir in */; do echo \"Building Raylib project: $dir\" && cd \"$dir\" && (emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release && emmake make -C build && mkdir -p ../../../../public/dist/wasm/\"$dir\" && cp build/*.js build/*.wasm ../../../../public/dist/wasm/\"$dir\"/) || echo \"Skipping $dir - emscripten not available\" && cd ..; done",
-    "build:threejs": "cd src/native/threejs && for dir in */; do echo \"Building Three.js project: $dir\" && cd \"$dir\" && [ -f package.json ] && (npm install && npm run build) || echo \"Skipping $dir - no package.json\" && cd ..; done",
+    "build:raylib": "[ -d src/native/raylib ] && (cd src/native/raylib && for dir in */; do echo \"Building Raylib project: $dir\" && cd \"$dir\" && (emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release && emmake make -C build && mkdir -p ../../../../public/dist/wasm/\"$dir\" && cp build/*.js build/*.wasm ../../../../public/dist/wasm/\"$dir\"/) || echo \"Skipping $dir - emscripten not available\" && cd ..; done) || echo \"Skipping raylib - directory not found\"",
+    "build:threejs": "[ -d src/native/threejs ] && (cd src/native/threejs && for dir in */; do echo \"Building Three.js project: $dir\" && cd \"$dir\" && [ -f package.json ] && (npm install && npm run build) || echo \"Skipping $dir - no package.json\" && cd ..; done) || echo \"Skipping standalone threejs - directory not found\"",
     "setup:tools": "npm run install:emscripten && npm run install:wasm-pack",
     "install:emscripten": "git clone https://github.com/emscripten-core/emsdk.git tools/emsdk && cd tools/emsdk && ./emsdk install latest && ./emsdk activate latest",
     "install:wasm-pack": "curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh"
