@@ -1,0 +1,15 @@
+{
+  "name": "starfield",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "starfield_bg.wasm",
+    "starfield.js",
+    "starfield.d.ts"
+  ],
+  "main": "starfield.js",
+  "types": "starfield.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

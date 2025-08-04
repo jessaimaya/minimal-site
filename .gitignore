@@ -1,5 +1,6 @@
-# build output
+# build output (but keep public/dist/ for WASM files)
 dist/
+!public/dist/
 # generated types
 .astro/
 
@@ -12,7 +13,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
 # environment variables
 .env
 .env.production
@@ -22,3 +22,73 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# ================================
+# NATIVE PROJECT COMPILED OUTPUTS
+# ================================
+
+# Rust/WASM intermediate build outputs (wasm-pack generated)
+**/pkg/
+# Ignore WASM files in source directories, but keep the ones in public/dist/wasm/
+src/native/**/*.wasm
+src/native/**/*.wasm.d.ts
+src/native/**/fractal_trees_bg.wasm
+src/native/**/fractal_trees_bg.wasm.d.ts
+
+# Rust Cargo build artifacts
+**/target/
+**/Cargo.lock
+
+# Emscripten/C++ compiled outputs  
+**/build/
+**/*.js.mem
+**/*.js.symbols
+**/*.js.temp*
+**/*.bc
+**/*.o
+**/*.a
+**/*.so
+**/*.wasm.map
+
+# Three.js/TypeScript compiled outputs
+**/threejs/node_modules/
+**/threejs/dist/
+**/threejs/*.iife.js
+**/threejs/package-lock.json
+
+# General native project dependencies
+**/node_modules/
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# IDE and editor files
+**/.vscode/
+**/.vs/
+**/*.swp
+**/*.swo
+**/.*~
+
+# OS generated files
+**/.DS_Store
+**/Thumbs.db
+**/*.tmp
+**/*.temp
+
+# Debug and profiling files
+**/*.pdb
+**/*.dSYM/
+**/debug/
+**/release/
+**/.rustc_info.json
+
+# Cache directories
+**/.cache/
+**/incremental/
+**/deps/
+**/examples/
+
+# Lock files for native dependencies
+**/Cargo.lock
+**/CMakeCache.txt
+**/CMakeFiles/

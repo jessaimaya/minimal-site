@@ -18,22 +18,38 @@ const allProjects = await getCollection('projects');
 // Pass controls data to be available in the component
 const controls = project.data.controls || [];
 
-// Read source code for the project
-let sourceCode = '';
-try {
-  if (project.data.framework === 'macroquad') {
-    const fs = await import('fs');
-    const path = await import('path');
-    const filePath = path.join(process.cwd(), 'src/native/macroquad', project.data.projectName, 'src/lib.rs');
-    sourceCode = fs.readFileSync(filePath, 'utf-8');
-  } else if (project.data.framework === 'raylib') {
-    const fs = await import('fs');
-    const path = await import('path');
-    const filePath = path.join(process.cwd(), 'src/native/raylib', project.data.projectName, 'main.cpp');
-    sourceCode = fs.readFileSync(filePath, 'utf-8');
+// Handle both old single-framework and new multi-framework projects
+const frameworks = project.data.frameworks || (project.data.framework ? [{
+  name: project.data.framework,
+  displayName: project.data.framework === 'macroquad' ? 'Rust + Canvas2D' : 'C++ + Raylib',
+  sourceCode: ''
+}] : []);
+
+// Read source code for frameworks that don't have it embedded
+if (frameworks.length > 0) {
+  const fs = await import('fs');
+  const path = await import('path');
+  
+  for (const framework of frameworks) {
+    if (!framework.sourceCode) {
+      try {
+        let filePath = '';
+        if (framework.name === 'macroquad') {
+          filePath = path.join(process.cwd(), 'src/native/macroquad', project.data.projectName, 'src/lib.rs');
+        } else if (framework.name === 'raylib') {
+          filePath = path.join(process.cwd(), 'src/native/raylib', project.data.projectName, 'main.cpp');
+        } else if (framework.name === 'threejs') {
+          filePath = path.join(process.cwd(), 'src/native/macroquad', project.data.projectName, 'threejs/src/main.ts');
+        }
+        
+        if (filePath) {
+          framework.sourceCode = fs.readFileSync(filePath, 'utf-8');
+        }
+      } catch (error) {
+        console.warn(`Could not read source code for ${framework.name}:`, error instanceof Error ? error.message : 'Unknown error');
+      }
+    }
   }
-} catch (error) {
-  console.warn(`Could not read source code for ${project.data.projectName}:`, error.message);
 }
 ---
 
@@ -44,7 +60,13 @@ try {
       <p class="description">{project.data.description}</p>
       <div class="meta">
         <span class="difficulty">{project.data.difficulty}</span>
-        <span class="framework">{project.data.framework}</span>
+        {frameworks.length > 1 ? (
+          <span class="framework">Multi-framework</span>
+        ) : frameworks.length === 1 ? (
+          <span class="framework">{frameworks[0]?.displayName}</span>
+        ) : (
+          <span class="framework">{project.data.framework || 'Unknown'}</span>
+        )}
         <time datetime={project.data.date.toISOString()}>
           {project.data.date.toLocaleDateString()}
         </time>
@@ -58,16 +80,15 @@ try {
     
     <Content />
     
-    <!-- Insert NativeCanvas component manually for fractal-trees -->
-    {project.slug === '001-fractal-trees' && (
+    <!-- Insert NativeCanvas component for projects with frameworks -->
+    {frameworks.length > 0 && (
       <div style="margin: 2rem 0;">
         <NativeCanvas 
-          project="fractal-trees"
-          framework="macroquad"
+          project={project.data.projectName}
+          frameworks={frameworks}
           width={800}
           height={600}
           controls={controls}
-          sourceCode={sourceCode}
         />
       </div>
     )}

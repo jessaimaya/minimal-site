@@ -1,0 +1,15 @@
+{
+  "name": "fractal-trees",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "fractal_trees_bg.wasm",
+    "fractal_trees.js",
+    "fractal_trees.d.ts"
+  ],
+  "main": "fractal_trees.js",
+  "types": "fractal_trees.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
