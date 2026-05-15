@@ -1,12 +1,14 @@
 ---
 title: 'Globant'
-position: 'Web Developer UI'
-description: 'An IT and software development company operating in many countries founded in Buenos Aires, but is currently headquartered in Luxembourg, and principally serves clients in the United States and United Kingdom.'
+position: 'Senior UI Engineer'
+description: 'A global software engineering and technology company serving major financial institutions in the United States. Within this engagement I worked embedded with fintech product squads at LendingClub and Empower Retirement, delivering enterprise-grade frontend systems in highly regulated environments.'
 task:
-    - Responsible for maintaining and modernizing legacy codebases and integrating new technologies to improve system efficiency and scalability.
-    - Develop new features that meet project goals and collaborate with cross-functional teams to ensure their success.
-    - Responsible for deploying well-documented, clean, and tested code in a CI/CD environment using the best continuous integration and delivery approaches.
-    - Helped integrate firms' new designs and workflows, delivering seamless transitions that meet system and business needs.
+    - Led incremental modernization of enterprise fintech UIs — migrating AngularJS codebases to React across LendingClub and Empower Retirement platforms — maintaining production stability throughout each transition.
+    - Designed and delivered new feature modules for high-compliance financial interfaces, coordinating with distributed product, design, and backend teams across time zones.
+    - Built Storybook-driven component libraries establishing shared design-system infrastructure reused across multiple product squads, reducing duplication and accelerating delivery.
+    - Enforced CI/CD discipline using Jenkins and AWS, integrating unit, integration, and visual regression test suites to sustain release confidence in regulated environments.
+    - Defined code quality standards through structured code review practices, JSDoc documentation, and Confluence knowledge bases — reducing onboarding time and eliminating technical knowledge silos.
+    - Applied secure frontend coding patterns aligned with PCI DSS standards and OWASP guidelines, ensuring compliance requirements were addressed at every layer of the UI stack.
 clients:
     -
         title: Lending Club
@@ -33,38 +35,31 @@ gallery:
         source: /img/empower_participant.png
 stack:
     - React
+    - AngularJS
     - Handlebars
     - Storybook
+    - TypeScript
     - Jest
     - Cypress
     - Puppeteer
-    - Async
-    - AWS
-    - API REST
-    - SASS
-    - Jenkings
-    - AngularJS
     - Redux
+    - SASS
+    - API REST
+    - AWS
+    - Jenkins
     - JSDoc
 challenges:
-    - "Understanding outdated code takes effort, especially when there is a lack of good documentation, making it difficult to avoid adding errors."
-    - "Ensuring backward compatibility with new features is difficult since earlier systems were not built for easy extension."
-    - "Refactoring without damaging current functionality is challenging, especially when there are intricate dependencies across teams."
-    - "Cross-team cooperation can cause delays since changes in one area affect others, requiring constant communication."
-    - "Legacy code frequently lacks tests, requiring me to develop new tests or retrospectively cover old code, increasing the chance of errors."
-    - "Maintaining test quality in CI/CD pipelines is challenging, especially when legacy systems were not built with continuous integration in mind."
-    - "Technical debt hinders progress, necessitating the cleanup of old code before adding new functionality to prevent further degradation."
-    - "New features can cause performance bottlenecks, prompting me to optimize without affecting the legacy system."
-    - "Version control disputes arise often among different teams, necessitating cautious merging and conflict resolution."
-    - "Compliance difficulties frequently develop, particularly in regulated businesses, making it critical to ensure that new features fulfill all applicable standards."
+    - "Modernized multi-year AngularJS codebases in live production environments by applying incremental migration patterns, preserving uptime and business continuity throughout each transition."
+    - "Introduced retroactive automated test suites across legacy modules with no prior test coverage, establishing a quality baseline that enabled safe refactoring without regression."
+    - "Resolved cross-team dependency conflicts by negotiating clear component ownership boundaries and API contracts, reducing integration bottlenecks across parallel product squads."
+    - "Managed technical debt without blocking feature delivery by scoping focused refactor cycles that ran alongside the product roadmap rather than against it."
+    - "Navigated compliance constraints in every UI change — from data rendering to form handling — to meet financial regulatory requirements without compromising user experience or delivery velocity."
 
 ---
-It is essential to **document** not only in the code, but also in a shared knowledge base such as _Confluence_ or a wiki, so that future teams can access this information.
+Working at the intersection of **legacy systems** and **modern enterprise requirements** demands more than writing clean code — it requires a systems mindset. At Globant, I learned to read the risk surface of a codebase before touching it: understanding which changes cascade, where compliance boundaries sit, and how to migrate without catastrophic failure.
 
-I prioritize producing **legible code above "smart" code** since _high-level languages_ like JavaScript are designed to be **understood by humans, not machines**.
+Serving clients like **LendingClub** and **Empower Retirement** means every UI decision carries downstream consequences for regulated financial operations. The discipline that environment builds — incremental changes, high test coverage, rigorous documentation — became the foundation of how I approach any large-scale frontend problem.
 
-**Automated tests and code coverage** are only the beginning for _code reviews_. The true benefit comes from providing **feedback** and cooperating on changes.
+**Cross-team coordination** is as technically demanding as the code itself. I developed a practice of making implicit assumptions explicit: documenting significant architectural decisions, building to interfaces rather than implementations, and running pre-integration reviews that surface conflicts before they hit CI. The result is a codebase that multiple teams can move through in parallel without stepping on each other.
 
-Clear and comprehensive **ticket refinement** is essential for a successful sprint. **Addressing any ambiguities** before allocating jobs helps to _avoid bottlenecks_ and confusion later in the process.
-
-**Knowledge sharing** is a fundamental value of mine. The more we _share insights and expertise_ with our team, the stronger and more effective we become. **Collaboration drives progress**, and we grow as a team when we support each other's growth.
+Clear and comprehensive **ticket refinement** is essential for a successful sprint. **Addressing any ambiguities** before allocating work helps to _avoid bottlenecks_ and confusion downstream. I prioritize **legible code over clever code** — in a regulated environment, the next engineer reading it may be auditing your decisions, not just maintaining your feature.

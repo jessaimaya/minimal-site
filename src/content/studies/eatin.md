@@ -1,17 +1,15 @@
 ---
 title: 'EatIn App'
-position: 'FullStack & Designer'
-description: "Through an App, instantly connect starving eaters with home cooks offering their home-made food dishes. Users and cooks can choose between enjoying food at the cook's home, pick their food up or get it delivered."
+position: 'Full-Stack Engineer & UI Designer'
+description: "A two-sided marketplace connecting home cooks with nearby eaters — supporting dine-in, pickup, and delivery. I owned the full stack end-to-end: product architecture, design system, mobile and web frontends, backend services, and CI/CD pipeline, under a 4-month delivery target."
 task:
-    - Develop a mobile-first UI/UX using React Native, ensuring smooth interactions across devices.
-    - Create separate dashboards for cooks to manage their meals, track orders, and view reviews, and for eaters to browse meals and track orders.
-    - Implement dynamic search and filtering for eaters to find meals based on cuisine, location, price, and availability.
-    - Build an intuitive ordering system with secure checkout, order history, and live order status.
-    - Create wireframes and prototypes using Figma, to visualize the app’s flow for both cooks and eaters.
-    - Define user journeys for both cooks and eaters to ensure that their paths through the app are efficient and enjoyable.
-    - Implement tests for both frontend and backend components, ensuring everything functions as expected.
-    - Set up a continuous integration and deployment pipeline to ensure automated testing and reliable deployments of new features and updates.
-    - Integrate Google Maps or another geolocation API for real-time cook discovery, meal delivery tracking, and proximity-based recommendations.
+    - Owned full-stack architecture decisions from day one — selecting the technology stack, infrastructure providers, and deployment strategy for a two-sided marketplace under a tight delivery constraint.
+    - Designed and implemented a cross-platform component library in React Native and React, driven by a Figma design system — establishing a single source of truth for UI across mobile and web surfaces.
+    - Built real-time order tracking and cook availability systems using WebSockets, managing concurrent state updates across user and cook dashboards without race conditions.
+    - Implemented JWT authentication and role-based access control across all surfaces, ensuring secure session handling and data isolation between user types.
+    - Set up end-to-end CI/CD pipelines using GitHub Actions, Heroku, TestFlight, and AWS Device Farm — automating builds, integration tests, and device deployments to enable continuous delivery on mobile.
+    - Integrated Google Maps geolocation API for proximity-based cook discovery and real-time delivery tracking.
+    - Defined user journeys for both cooks and eaters through Figma prototypes before implementation, validating interaction flows early to reduce scope creep mid-sprint.
 clients:
     -
         title: EatIn App
@@ -22,33 +20,27 @@ clients:
 stack:
     - React Native
     - React
-    - FeatherJs
-    - Typescript
-    - socketio
-    - Async
+    - TypeScript
+    - FeatherJS
+    - Socket.io
     - JWT Auth
-    - API REST
-    - CRUD
-    - Styled Components
     - Redux
+    - Styled Components
     - MongoDB
     - Google Cloud Platform
+    - GitHub Actions
+    - Figma
 challenges:
-    - Designing an intuitive and user-friendly interface for both cooks and eaters, ensuring that users can easily navigate the app.
-    - Implementing real-time features like order tracking, cook availability, and notifications for when a meal is ready. This requires efficient handling of WebSockets for seamless communication.
-    - Implementing secure and smooth payment gateways that handle transactions between users. This includes splitting payments and handling refunds
-    - Integrating accurate geolocation for matching eaters with nearby cooks and enabling real-time navigation and transactions.
-    - Implementing a robust notification system (in-app, email, push) to keep users updated on their transactions and status.
+    - "Delivered a functional two-sided marketplace prototype in 3–4 months by making pragmatic technology choices early and deferring non-essential complexity until after the core flow was stable."
+    - "Managed WebSocket state consistency across concurrent user and cook sessions — ensuring real-time updates (order status, availability, notifications) remained in sync without race conditions."
+    - "Bootstrapped a full design-to-code pipeline as a two-person team: Figma design system → shared component library → production UI, eliminating the handoff bottleneck that typically costs weeks in larger teams."
+    - "Designed secure authentication and payment flows without a dedicated security engineer, applying JWT best practices and researching payment gateway compliance requirements independently."
 
 ---
-Our first concern was delivering a **functional prototype fast**; every choice had great weight. Knowing what would fit inside the schedule and having experience let me choose the **correct tools for every task**.
+EatIn was the most concentrated exercise in **end-to-end ownership** I've had. When you're the only engineer making architecture decisions, there is nowhere to defer: every technology choice, infrastructure trade-off, and UX decision lands on you.
 
-Manual testing and deployment took time, hence we developed **automated workflows** using constant integration and delivery **(CI/CD)**. This greatly cut the time spent _building, installing, and testing_ on cellphones by allowing us to perform integration tests effectively and show _progress without delay_.
+The constraint — a **functional prototype in under four months** — forced a discipline that large-team projects often lack: ruthless prioritization. I mapped the critical path on day one and worked backward from it. Features that didn't serve the core user flow were deferred without negotiation. Tools were chosen for what they could deliver today, not for what they might scale to hypothetically.
 
-Using already-existing systems including _Heroku, TestFlight, GitHub Actions, and Device Farm_ let us avoid starting from scratch with infrastructure building. **"Standing on the shoulders of giants"** let us concentrate on the central offering rather than _reinventing the wheel_.
+The most technically demanding piece was the **real-time layer**. A two-sided marketplace means two independent sessions — cook and eater — need to see the same state without latency. I implemented WebSocket event handling with explicit acknowledgement patterns to prevent silent failures, and tested concurrent update scenarios before considering the feature complete.
 
-Our design process's web-based, collaborative character and emphasis on web/app design led me to suggest **Figma**. Considering _colors, themes, user interactions, and performance_, I developed a **design system** that fit quite well in a _component library_. Better abstraction and efficiency in design were made possible by my developer perspective.
-
-Working on the **back-end and both front-end** apps allowed me _complete control_ over the user flow—from registration to order creation and content uploads. With every iteration, our custom-made CI/CD pipeline saved a great deal of time.
-
-Thanks to the **agile methodology** we developed, we were happy with the outcome when we effectively introduced a _functional prototype in three to four months_.
+The **design system** was a forcing function for the frontend architecture. Building it in Figma first — with tokens for color, spacing, and type — meant the component library had a contract to implement against, not just a mockup to approximate. That discipline is one I've carried into every project since: the interface between design and engineering should be a specification, not an interpretation.
