@@ -1,0 +1,20 @@
+---
+// Netlify serves this for any path without a page; send visitors home.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="0; url=/" />
+    <title>Jessaí Maya</title>
+    <script is:inline>
+      window.location.replace("/");
+    </script>
+  </head>
+  <body>
+    <p>This page doesn't exist. <a href="/">Go to the homepage</a>.</p>
+  </body>
+</html>
