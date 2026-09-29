@@ -1,0 +1,6 @@
+# Keep the profile photo out of image search and crawler indexes.
+User-agent: *
+Disallow: /img/jessai_maya_profile_picture.jpg
+Allow: /
+
+Sitemap: https://jessai.dev/sitemap-index.xml
