@@ -7,6 +7,7 @@ const studies = defineCollection({
 		title: z.string(),
 		position: z.string(),
 		description: z.string(),
+		metaDescription: z.string(),
 		task: z.array(z.string()),
 		clients: z.array(z.object({
 			title: z.string(),

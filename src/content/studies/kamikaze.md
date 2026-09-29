@@ -2,6 +2,7 @@
 title: 'Kamikaze Lab'
 position: 'Tech Lead & Architect'
 description: "A digital product agency where I built and led the frontend practice over seven years, growing the team, defining technical standards, and owning the technical relationship with enterprise clients across fintech, telecom, gaming, and real estate."
+metaDescription: "Case study: seven years as Tech Lead & Architect at Kamikaze Lab, leading frontend work for Visa and Citi Banamex."
 task:
     - Led full-cycle technical delivery for enterprise clients including Visa, Citi Banamex, and Riot Games, from architecture scoping and technology selection through production deployment.
     - Owned client-facing technical discovery sessions, translating ambiguous business requirements into concrete architecture proposals, effort estimates, and technology decisions.

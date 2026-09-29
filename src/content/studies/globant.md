@@ -2,6 +2,7 @@
 title: 'Globant'
 position: 'Senior UI Engineer'
 description: 'A global software engineering and technology company serving major financial institutions in the United States. Within this engagement I worked embedded with fintech product squads at LendingClub and Empower Retirement, delivering enterprise-grade frontend systems in highly regulated environments.'
+metaDescription: "Case study: Senior UI Engineer at Globant, building regulated fintech frontends for LendingClub and Empower Retirement."
 task:
     - Led incremental modernization of enterprise fintech UIs, migrating AngularJS codebases to React across the LendingClub and Empower Retirement platforms while keeping production stable through each transition.
     - Designed and delivered new feature modules for high-compliance financial interfaces, coordinating with distributed product, design, and backend teams across time zones.

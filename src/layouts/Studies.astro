@@ -12,12 +12,15 @@ type Client = {
   logoi: string;
 };
 
-const { title, description, task, position, clients, stack } = Astro.props;
+const { title, description, metaDescription, task, position, clients, stack } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead
+      title={`${title} case study | Jessaí Maya`}
+      description={metaDescription}
+    />
     <style>
       main {
         font-family: "Open Sans", sans-serif;

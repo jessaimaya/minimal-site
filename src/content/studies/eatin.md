@@ -2,6 +2,7 @@
 title: 'EatIn App'
 position: 'Full-Stack Engineer & UI Designer'
 description: "A two-sided marketplace connecting home cooks with nearby eaters, supporting dine-in, pickup, and delivery. I owned the full stack end to end: product architecture, design system, mobile and web frontends, backend services, and CI/CD pipeline, under a 4-month delivery target."
+metaDescription: "Case study: full-stack engineer and UI designer for EatIn App, a two-sided marketplace for home cooks, built end to end."
 task:
     - Owned full-stack architecture decisions from day one, selecting the technology stack, infrastructure providers, and deployment strategy for a two-sided marketplace under a tight delivery constraint.
     - Designed and implemented a cross-platform component library in React Native and React, driven by a Figma design system, giving mobile and web a single source of truth for UI.
