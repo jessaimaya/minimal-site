@@ -14,88 +14,66 @@ export type ExperimentGroup = {
   items: Experiment[];
 };
 
-// Everything listed here links to a real, public, non-fork repository.
+// Everything listed here links to a real, public, non-fork repository,
+// and each blurb matches what the code actually does today.
 // Add new work at the top of its group as it ships.
 export const experimentGroups: ExperimentGroup[] = [
   {
-    id: "ai-systems",
-    title: "AI & systems",
-    lede: "LLM agents with tool definitions, MCP servers, prompt evaluation, and locally hosted open-weight models.",
+    id: "products",
+    title: "Products",
+    lede: "Sites and apps built for real use.",
     items: [
-      {
-        title: "code-recall",
-        repo: "https://github.com/jessaimaya/code-recall",
-        year: "2026",
-        stack: "FSRS · local-first",
-        blurb:
-          "Spaced repetition for developers — practice coding interviews the way you actually work. Built on the FSRS scheduling algorithm.",
-      },
       {
         title: "the-coop",
         repo: "https://github.com/jessaimaya/the-coop",
         demo: "https://the-coop.vercel.app",
         year: "2025",
-        stack: "TypeScript",
+        stack: "Next.js, TypeScript, Vitest, Playwright",
         blurb:
-          "A flexible structure that assembles itself around each project — connecting the right talents to build what no one could build alone.",
+          "Website for coop, a collective that builds small teams around each project.",
       },
     ],
   },
   {
     id: "games-wasm",
     title: "Games & WebAssembly",
-    lede: "Rust compiled to WebAssembly, and a Godot project — where the art and animation training meets the systems work.",
+    lede: "Rust compiled to WebAssembly, where the art and animation training meets the systems work.",
     items: [
       {
-        title: "wasm_snake",
-        repo: "https://github.com/jessaimaya/wasm_snake",
-        year: "2024",
-        stack: "Rust → WASM",
-        blurb: "Snake, written in Rust and compiled to WebAssembly.",
+        title: "2048",
+        repo: "https://github.com/jessaimaya/2048",
+        year: "2021",
+        stack: "Rust, Mogwai",
+        blurb: "2048 in Rust on the Mogwai framework, with score, undo and restart.",
       },
       {
         title: "connect_four",
         repo: "https://github.com/jessaimaya/connect_four",
         year: "2024",
-        stack: "Rust → WASM",
-        blurb: "Connect Four with move evaluation, in Rust and WebAssembly.",
+        stack: "Rust, Leptos",
+        blurb: "Unfinished. Screens and board are built; game logic isn't yet.",
       },
       {
-        title: "godot_demo",
-        repo: "https://github.com/jessaimaya/godot_demo",
+        title: "wasm_snake",
+        repo: "https://github.com/jessaimaya/wasm_snake",
         year: "2024",
-        stack: "Godot · GDScript",
-        blurb: "A Godot project exploring scene composition and GDScript.",
-      },
-      {
-        title: "2048",
-        repo: "https://github.com/jessaimaya/2048",
-        year: "2021",
-        stack: "Rust · Mogwai",
-        blurb: "2048 implemented in Rust on the Mogwai reactive framework.",
+        stack: "Rust to WebAssembly, TypeScript",
+        blurb: "Unfinished. The snake moves and turns; no food or scoring yet.",
       },
     ],
   },
   {
     id: "generative",
     title: "Generative graphics",
-    lede: "Drawing with code — canvas, WebGL, and Rust/WASM frontend frameworks (Yew, Sycamore, Leptos).",
+    lede: "Drawing with code in the browser.",
     items: [
       {
         title: "wassily_poster",
         repo: "https://github.com/jessaimaya/wassily_poster",
         year: "2022",
-        stack: "Rust → WASM · web-sys",
+        stack: "Rust to WebAssembly, web-sys",
         blurb:
-          "A poster generator inspired by Wassily Kandinsky's paintings — every render is a new composition.",
-      },
-      {
-        title: "leptos_tic-tac-toe",
-        repo: "https://github.com/jessaimaya/leptos_tic-tac-toe",
-        year: "2024",
-        stack: "Rust · Leptos",
-        blurb:
-          "Exploring fine-grained reactivity in Leptos, a Rust frontend framework.",
+          "A poster generator inspired by Wassily Kandinsky's paintings. Every render is a new composition.",
       },
     ],
   },

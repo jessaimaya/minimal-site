@@ -101,6 +101,6 @@ export const skills: SkillGroup[] = [
 ];
 
 export const sideWork = [
-  "Games and generative graphics: a Godot project, Snake, 2048 and Connect Four written in Rust and compiled to WebAssembly, and wassily_poster, a Kandinsky-inspired poster generator.",
+  "Games and generative graphics in Rust compiled to WebAssembly, including a complete 2048 game and wassily_poster, a Kandinsky-inspired poster generator. Also unfinished Snake and Connect Four prototypes and a first Godot experiment.",
   "More recently, AI and systems work with LLM agents and tool definitions, MCP servers, prompt evaluation and locally hosted open-weight models, alongside Rust and WebAssembly frontend work (Yew, Sycamore, Leptos).",
 ];
