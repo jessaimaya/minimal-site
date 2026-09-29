@@ -1,0 +1,357 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Education from "../components/Education.astro";
+import { SITE_TITLE, SITE_EMAIL, SITE_LOCATION } from "../consts";
+import { summary, jobs, skills, sideWork } from "../data/cv";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`${SITE_TITLE} | CV`}
+      description="Curriculum vitae of Jessaí Maya, Frontend Engineer & Architect with 14+ years building enterprise-scale UI systems."
+    />
+  </head>
+
+  <body>
+    <div class="u-container">
+      <Header />
+
+      <section class="intro">
+        <h1>
+          <span class="name">Curriculum</span>
+          <span class="name-last">Vitae</span>
+        </h1>
+        <a
+          href="/Jessai-Maya-CV.pdf"
+          class="download"
+          download
+          title="Download CV as PDF"
+        >
+          <span class="button">Download PDF</span>
+          <span class="arrow" aria-hidden="true">↓</span>
+        </a>
+      </section>
+
+      <section class="summary">
+        <h2>.../Summary...</h2>
+        <div class="text">
+          <p>{summary}</p>
+          <p class="contact">
+            <a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+            <a href="https://github.com/jessaimaya">github.com/jessaimaya</a>
+            <a href="https://www.linkedin.com/in/jessai-maya-7a132229/"
+              >linkedin.com/in/jessai-maya</a
+            >
+            <span>{SITE_LOCATION}</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="title">Experience</h2>
+        <ul class="jobs">
+          {
+            jobs.map((job) => (
+              <li class="job">
+                <p class="date">
+                  <span>{job.when}</span>
+                  {job.where && <span>{job.where}</span>}
+                </p>
+                <div class="detail">
+                  <h3>
+                    {job.role}
+                    <span class="org">{job.org}</span>
+                  </h3>
+                  <p class="stack">{job.stack}</p>
+                  <ul class="points">
+                    {job.points.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                  {job.study && (
+                    <a class="study" href={job.study}>
+                      Case study
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2 class="title">Skills</h2>
+        <ul class="skills">
+          {
+            skills.map((group) => (
+              <li class="skill">
+                <h3>{group.title}</h3>
+                <p>{group.items.join(", ")}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2 class="title">Side work</h2>
+        <div class="side">
+          {sideWork.map((line) => <p>{line}</p>)}
+        </div>
+      </section>
+
+      <Education />
+      <Footer />
+    </div>
+  </body>
+</html>
+
+<style>
+  .intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--space-m);
+    margin: var(--space-xs);
+  }
+  h1 {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-5);
+    color: var(--accent);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .download {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    margin-bottom: var(--space-s);
+    font-size: var(--step-0);
+  }
+  .button {
+    background-color: var(--accent);
+    color: var(--background);
+    padding: var(--step--1) var(--step-4);
+    border-radius: var(--space-l);
+    margin-right: var(--space-m);
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .arrow {
+    width: var(--step-3);
+    height: var(--step-3);
+    padding: var(--space-s);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--background);
+    background-color: var(--accent);
+    font-weight: bold;
+  }
+  .download:hover .button,
+  .download:focus-visible .button {
+    font-style: normal;
+  }
+  .download:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: var(--space-l);
+  }
+
+  .summary {
+    margin: var(--space-l-xl) 0;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-m);
+  }
+  .summary h2 {
+    flex: 1;
+    font-size: var(--step-0);
+    font-weight: normal;
+    font-family: "Open Sans", sans-serif;
+    color: var(--accent);
+    margin: 0;
+  }
+  .summary .text {
+    flex: 2;
+  }
+  .summary p {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    color: var(--gray);
+    margin: 0 0 var(--space-s);
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-m);
+  }
+  .contact a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: solid 1px var(--gray);
+  }
+
+  .block {
+    margin: var(--space-l-xl);
+  }
+  .title {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-4);
+    color: var(--accent);
+    text-align: right;
+    margin: 0 0 var(--space-s);
+  }
+
+  .jobs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .job {
+    display: flex;
+    gap: var(--space-m);
+    padding: var(--space-m);
+    border-bottom: solid 1px var(--accent);
+  }
+  .job:first-child {
+    border-top: solid 1px var(--accent);
+  }
+  .date {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: var(--gray);
+    font-size: var(--step--1);
+    font-family: "Open Sans", sans-serif;
+  }
+  .detail {
+    flex: 5;
+  }
+  .detail h3 {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    font-weight: bold;
+    color: var(--accent);
+    margin: 0;
+  }
+  .org {
+    font-weight: normal;
+    color: var(--gray);
+    margin-left: var(--space-2xs);
+  }
+  .stack {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step--1);
+    color: var(--accent);
+    margin: var(--space-3xs) 0 var(--space-s);
+  }
+  .points {
+    margin: 0;
+    padding-left: var(--space-s);
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+  .points li {
+    margin-bottom: var(--space-3xs);
+  }
+  .study {
+    display: inline-block;
+    margin-top: var(--space-2xs);
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    color: var(--accent);
+  }
+
+  .skills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .skill {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-m);
+    padding: var(--space-2xs) var(--space-m);
+    border-bottom: solid 1px var(--rule, var(--gray));
+  }
+  .skill:first-child {
+    border-top: solid 1px var(--accent);
+  }
+  .skill:last-child {
+    border-bottom-color: var(--accent);
+  }
+  .skill h3 {
+    flex: 1;
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    font-weight: bold;
+    color: var(--accent);
+  }
+  .skill p {
+    flex: 5;
+    margin: 0;
+    font-family: "FiraCode", monospace;
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--accent);
+  }
+
+  .side p {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    color: var(--gray);
+    margin: 0 0 var(--space-s) auto;
+    max-width: 60ch;
+    text-align: right;
+  }
+
+
+  @media (max-width: 48rem) {
+    .intro {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .summary {
+      flex-direction: column;
+      padding: 0 var(--space-s);
+    }
+    .summary h2 {
+      font-size: var(--step-3);
+    }
+    .block {
+      margin: var(--space-l) var(--space-s);
+    }
+    .job {
+      flex-direction: column;
+      gap: var(--space-2xs);
+      padding: var(--space-s) 0;
+    }
+    .date {
+      flex-direction: row;
+      gap: var(--space-s);
+    }
+    .skill {
+      flex-direction: column;
+      gap: 0;
+      padding: var(--space-2xs) 0;
+    }
+    .side p {
+      text-align: left;
+      margin-left: 0;
+    }
+  }
+</style>

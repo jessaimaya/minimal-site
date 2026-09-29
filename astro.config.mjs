@@ -10,5 +10,8 @@ export default defineConfig({
     enabled: false
   },
   site: "https://jessai.dev",
+  redirects: {
+    "/about": "/#about",
+  },
   integrations: [mdx(), sitemap(), react()]
 });

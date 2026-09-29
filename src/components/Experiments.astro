@@ -1,0 +1,177 @@
+---
+import { experimentGroups } from "../data/experiments";
+---
+
+<section class="experiments" id="experiments">
+  <h2>Experiments</h2>
+  <p class="lede">
+    Side work, kept public. Games and generative graphics, Rust compiled to
+    WebAssembly, and more recently AI and systems work.
+  </p>
+
+  {
+    experimentGroups.map((group) => (
+      <div class="group" id={group.id}>
+        <div class="group-head">
+          <h3>{group.title}</h3>
+          <p>{group.lede}</p>
+        </div>
+        <ul class="items">
+          {group.items.map((item) => (
+            <li>
+              <a href={item.repo} title={item.title}>
+                <span class="row">
+                  <span class="name">{item.title}</span>
+                  <span class="year">{item.year}</span>
+                </span>
+                <span class="stack">{item.stack}</span>
+                <span class="blurb">{item.blurb}</span>
+              </a>
+              {item.demo && (
+                <a class="demo" href={item.demo} title={`${item.title} demo`}>
+                  Live demo ↗
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+
+  <p class="more">
+    More at <a href="https://github.com/jessaimaya">github.com/jessaimaya</a>
+  </p>
+</section>
+
+<style>
+  .experiments {
+    margin: var(--space-l-xl);
+  }
+  h2 {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-4);
+    color: var(--accent);
+    text-align: right;
+    margin: 0;
+  }
+  .lede {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    color: var(--gray);
+    text-align: right;
+    margin: 0 0 var(--space-l);
+    margin-left: auto;
+    max-width: 48ch;
+  }
+  .group {
+    margin-bottom: var(--space-l);
+  }
+  .group-head {
+    border-bottom: solid 1px var(--accent);
+    padding-bottom: var(--space-2xs);
+    margin-bottom: var(--space-s);
+  }
+  .group-head h3 {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-1);
+    color: var(--accent);
+    margin: 0;
+    font-weight: normal;
+  }
+  .group-head p {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    color: var(--gray);
+    margin: var(--space-3xs) 0 0;
+    max-width: 68ch;
+  }
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-s);
+  }
+  .items li {
+    border: solid 1px var(--accent);
+    border-radius: var(--space-m);
+    padding: var(--space-s);
+    display: flex;
+    flex-direction: column;
+    transition: background-color 200ms;
+  }
+  .items li:hover {
+    background-color: var(--accent);
+  }
+  .items li:hover .name,
+  .items li:hover .year,
+  .items li:hover .stack,
+  .items li:hover .blurb,
+  .items li:hover .demo {
+    color: var(--background);
+  }
+  .items a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-s);
+  }
+  .name {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-0);
+    color: var(--accent);
+  }
+  .year {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--2);
+    color: var(--gray);
+  }
+  .stack {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step--2);
+    color: var(--gray);
+    margin-top: var(--space-3xs);
+  }
+  .blurb {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    color: var(--accent);
+    margin-top: var(--space-2xs);
+  }
+  .demo {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--2);
+    color: var(--accent);
+    margin-top: var(--space-2xs);
+    text-decoration: underline;
+  }
+  .more {
+    text-align: right;
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+  .more a {
+    color: var(--accent);
+  }
+
+  @media (max-width: 48rem) {
+    .experiments {
+      margin: var(--space-l) var(--space-s);
+    }
+    .lede {
+      text-align: left;
+    }
+    .items {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

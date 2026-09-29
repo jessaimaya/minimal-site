@@ -7,12 +7,16 @@ import AboutMe from "../components/AboutMe.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import SocialLinks from "../components/SocialLinks.astro";
 import Work from "../components/Work.astro";
+import Education from "../components/Education.astro";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead
+      title={`${SITE_TITLE} | Frontend Engineer & Architect`}
+      description={SITE_DESCRIPTION}
+    />
   </head>
 
   <body>
@@ -20,9 +24,10 @@ import Work from "../components/Work.astro";
       <Header />
       <Bio />
       <SocialLinks />
-      <!-- POSTS LIST -->
       <AboutMe />
       <Work />
+      {/* <Experiments /> hidden until projects ship; re-enable as projects ship; data in src/data/experiments.ts */}
+      <Education />
       <Footer />
     </div>
   </body>

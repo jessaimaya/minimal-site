@@ -1,0 +1,101 @@
+---
+
+---
+
+<section class="education">
+  <h2>Education</h2>
+  <ul class="education-list">
+    <li>
+      <p class="date">
+        <span>2007-2011</span>
+        <span>4 years</span>
+      </p>
+      <p class="school">ITESM</p>
+      <p class="degree">
+        Licenciatura, Art &amp; Animation
+        <span class="full"
+          >Instituto Tecnológico y de Estudios Superiores de Monterrey</span
+        >
+      </p>
+    </li>
+  </ul>
+</section>
+
+<style>
+  .education {
+    margin: var(--space-l-xl);
+  }
+  h2 {
+    font-family: "FiraCode", monospace;
+    font-size: var(--step-4);
+    color: var(--accent);
+    text-align: right;
+    margin: 0 0 var(--space-s);
+  }
+  .education-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-top: solid 1px var(--accent);
+    border-bottom: solid 1px var(--accent);
+    padding: var(--space-s) var(--space-m);
+  }
+  .date {
+    flex: 1;
+    display: flex;
+    color: var(--gray);
+    flex-direction: column;
+    font-size: var(--step--1);
+    font-family: "Open Sans", sans-serif;
+  }
+  .school {
+    flex: 2;
+    color: var(--accent);
+    font-size: var(--step--1);
+    text-align: left;
+    font-family: "Open Sans", sans-serif;
+  }
+  .degree {
+    flex: 3;
+    color: var(--accent);
+    font-size: var(--step--1);
+    font-family: "FiraCode", monospace;
+  }
+  .full {
+    display: block;
+    color: var(--gray);
+    font-size: var(--step--2);
+    font-family: "Open Sans", sans-serif;
+  }
+
+  @media (max-width: 48rem) {
+    .education {
+      margin: var(--space-l) var(--space-s);
+    }
+    li {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .date {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+    .school {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      font-weight: bold;
+    }
+    .degree {
+      grid-column: 1 / -1;
+      grid-row: 2 / 3;
+      margin-top: var(--space-2xs);
+    }
+  }
+</style>

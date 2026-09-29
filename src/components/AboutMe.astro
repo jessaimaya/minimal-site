@@ -1,36 +1,41 @@
 ---
-
+import { skills as groups } from "../data/cv";
 ---
 
-<section class="about-me">
+<section class="about-me" id="about">
   <div class="intro">
     <h2>.../About me...</h2>
-    <p class="salute">
-      Hi! I'm Jessai Maya, a <strong>Frontend Engineer & Architect</strong> with over <strong
-        >14 years
-      </strong>of experience building <strong>enterprise-scale UI systems</strong> for regulated industries.
-    </p>
+    <div class="salute">
+      <p>
+        Hi! I'm Jessaí Maya, a <strong>Frontend Engineer &amp; Architect</strong>
+        with over <strong>14 years</strong> of experience building <strong
+          >enterprise-scale UI systems</strong
+        > for regulated industries, most recently fintech. I work at the level of
+        <strong>architecture</strong>, <strong>performance</strong>, and the
+        shared UI infrastructure product teams build on, such as component
+        systems, build tooling and accessibility standards that hold up as
+        codebases grow.
+      </p>
+      <p>
+        Trained in <strong>art and animation</strong>. Currently building with <strong
+          >LLM APIs, agents and MCP</strong
+        >, alongside games and generative graphics.
+      </p>
+    </div>
   </div>
   <div class="stack">
     <div class="description">
-      <div class="frontend">
-        <h3>Front-end</h3>
-        <p>
-          HTML / CSS / TypeScript / ES6 / React / Next.js / Webpack / Vite /
-          Jest / RTL / Cypress / Figma / a11y / WCAG / PWA / ThreeJS / WebGL /
-          Web Workers / Micro-frontends / Storybook
-        </p>
-      </div>
-      <div class="styles">
-        <div class="content">
-          <h3>Styling</h3>
-          <p>
-            SCSS / SASS / PostCSS / Ant.d / Material / Styled Components / Bulma
-            / Bootstrap
-          </p>
-        </div>
+      <div class="cards">
+        {
+          groups.map((group) => (
+            <div class:list={["card", { feature: group.feature }]} id={group.id}>
+              <h3>{group.title}</h3>
+              <p>{group.items.join(" / ")}</p>
+            </div>
+          ))
+        }
         <div class="link">
-          <a href="https://github.com/jessaimaya" title="github">
+          <a href="https://github.com/jessaimaya" title="GitHub">
             <span class="icon">
               <svg
                 role="img"
@@ -45,20 +50,15 @@
           </a>
         </div>
       </div>
-      <div class="backend">
-        <h3>Back-end context</h3>
-        <p>
-          Node / NestJS / Express / MySQL / MongoDB / Websockets / REST /
-          GraphQL / Prisma / Postman
-        </p>
-      </div>
-      <div class="devops">
-        <h3>DevOps</h3>
-        <p>AWS / Docker / GCP / Jenkins / Nginx / CI-CD</p>
-      </div>
     </div>
     <div class="photo">
-      <img src="/img/jessai_maya_profile_picture.jpg" alt="Jessai Maya Photo" />
+      <img
+        src="/img/jessai_maya_profile_picture.jpg"
+        alt="Jessaí Maya"
+        width="480"
+        height="480"
+        loading="lazy"
+      />
     </div>
   </div>
 </section>
@@ -71,6 +71,7 @@
     margin: var(--space-l-xl) 0;
     display: flex;
     justify-content: space-between;
+    gap: var(--space-m);
   }
   h2 {
     flex: 1;
@@ -83,10 +84,16 @@
   }
   .salute {
     flex: 2;
+  }
+  .salute p {
     font-weight: normal;
     font-size: var(--step-0);
     font-family: "Open Sans", sans-serif;
     color: var(--gray);
+    margin: 0 0 var(--space-s);
+  }
+  .salute p:last-child {
+    margin-bottom: 0;
   }
   strong {
     display: inline;
@@ -97,41 +104,36 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: var(--space-m);
   }
   .description {
     flex: 3;
   }
-  .frontend,
-  .backend,
-  .devops,
-  .content {
-    color: var(--background);
-    font-size: var(--step-0);
-    font-weight: normal;
-    background-color: var(--accent);
-    border-radius: var(--space-m);
-    padding: var(--space-s);
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-s);
+    align-items: stretch;
   }
-  .content,
-  .devops,
-  .backend {
-    flex: 2;
+  .card {
     color: var(--accent);
     background-color: transparent;
     border: solid 1px var(--accent);
+    border-radius: var(--space-m);
+    padding: var(--space-s);
   }
-  .devops {
-    margin: var(--space-m) 0;
+  .card.feature {
+    color: var(--background);
+    background-color: var(--accent);
+    border-color: var(--accent);
+  }
+  #frontend {
+    grid-column: 1 / -1;
   }
   .link {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .styles {
-    display: flex;
-    margin: var(--space-m) 0;
   }
   a {
     --icon-size: var(--space-l-xl);
@@ -145,7 +147,6 @@
     position: absolute;
     width: var(--icon-size);
     height: var(--icon-size);
-    display: block;
     border: solid 1px var(--accent);
     background-color: var(--accent);
     display: flex;
@@ -183,6 +184,7 @@
   }
   img {
     max-width: 80%;
+    height: auto;
     border-radius: var(--step-1);
   }
   h3 {
@@ -190,8 +192,9 @@
     margin: 0;
     font-family: "Open Sans", sans-serif;
   }
-  p {
+  .card p {
     font-size: var(--step--1);
+    margin: var(--space-2xs) 0 0;
   }
 
   @media (max-width: 48rem) {
@@ -203,7 +206,7 @@
     h2 {
       font-size: var(--step-3);
     }
-    .salute {
+    .salute p {
       font-size: var(--step-1);
     }
     .stack {
@@ -212,17 +215,22 @@
       justify-content: space-between;
       align-items: center;
     }
+    .description {
+      width: 100%;
+    }
+    .cards {
+      grid-template-columns: 1fr;
+    }
     .photo {
       margin: var(--space-l);
     }
     img {
       max-width: 100%;
     }
-    .frontend,
-    .content {
+    .card.feature {
       font-size: var(--step-1);
     }
-    p {
+    .card p {
       font-size: var(--step-0);
     }
   }

@@ -1,5 +1,6 @@
 ---
 import SocialLinks from "./SocialLinks.astro";
+import { SITE_EMAIL, SITE_LOCATION } from "../consts";
 ---
 
 <footer>
@@ -15,15 +16,19 @@ import SocialLinks from "./SocialLinks.astro";
     </div>
     <div class="contacts">
       <h2>.../Contacts...</h2>
+      <p class="reach">
+        <a href={`mailto:${SITE_EMAIL}`} class="email" title="Email me"
+          >{SITE_EMAIL}</a
+        >
+        <span class="location">{SITE_LOCATION}</span>
+      </p>
       <ul class="nav-list">
         <li class="nav-item">
-          <a href="" class="nav-link" title="home">Home</a>
+          <a href="/" class="nav-link" title="Home">Home</a>
         </li>
-        <!-- <li class="nav-item">
-          <a href="" class="nav-link" title="projects">Projects</a>
-        </li><li class="nav-item">
-          <a href="" class="nav-link" title="Articles">Articles</a>
-        </li> -->
+        <li class="nav-item">
+          <a href="/cv" class="nav-link" title="CV">CV</a>
+        </li>
       </ul>
       <div class="site">
         <p class="title">Site</p>
@@ -83,6 +88,24 @@ import SocialLinks from "./SocialLinks.astro";
   }
   .contacts h2 {
     font-size: var(--step-0);
+  }
+  .reach {
+    display: flex;
+    flex-direction: column;
+    margin: var(--space-2xs) 0 var(--space-s);
+    font-family: "Open Sans", sans-serif;
+  }
+  .email {
+    color: var(--accent);
+    font-size: var(--step-0);
+    text-decoration: none;
+    border-bottom: solid 1px var(--gray);
+    align-self: flex-start;
+  }
+  .location {
+    color: var(--gray);
+    font-size: var(--step--1);
+    margin-top: var(--space-3xs);
   }
   .nav-list {
     list-style: none;

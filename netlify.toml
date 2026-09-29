@@ -4,3 +4,10 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Any URL without a matching page goes home instead of a 404.
+# Non-forced rules only apply when no file exists at the path.
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 302
