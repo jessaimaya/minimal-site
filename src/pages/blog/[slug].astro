@@ -1,0 +1,212 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import { Code } from "astro:components";
+import { getCollection, render } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import LiveExperiment from "../../components/LiveExperiment.astro";
+import { SITE_TITLE } from "../../consts";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { title, description, date, experiment, ramp, runtimes, controls, credit } = post.data;
+const { Content } = await render(post);
+
+// Source shown under the post, read at build time from src/native/
+const sources = runtimes.map((runtime) => ({
+  label: runtime.label,
+  file: path.basename(runtime.source),
+  lang: path.extname(runtime.source) === ".rs" ? "rust" : "ts",
+  code: fs.readFileSync(path.join(process.cwd(), "src/native", runtime.source), "utf-8"),
+})) as { label: string; file: string; lang: "rust" | "ts"; code: string }[];
+
+const day = new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${title} | ${SITE_TITLE}`} description={description} />
+  </head>
+  <body>
+    <div class="u-container">
+      <Header />
+      <main>
+        <article>
+          <header class="column">
+            <a class="back" href="/blog">Blog</a>
+            <h1>{title}</h1>
+            <p class="lede">{description}</p>
+            <time datetime={date.toISOString()}>{day.format(date)}</time>
+          </header>
+
+          <LiveExperiment experiment={experiment} runtimes={runtimes} controls={controls} ramp={ramp} />
+
+          <div class="column prose">
+            <Content />
+          </div>
+
+          <footer class="column">
+            {
+              sources.map((source) => (
+                <details>
+                  <summary>
+                    {source.label} source <span class="file">{source.file}</span>
+                  </summary>
+                  <Code
+                    code={source.code}
+                    lang={source.lang}
+                    themes={{ light: "github-light", dark: "github-dark" }}
+                    defaultColor={false}
+                  />
+                </details>
+              ))
+            }
+            {
+              credit && (
+                <p class="credit">
+                  Based on <a href={credit.url}>{credit.label}</a>.
+                </p>
+              )
+            }
+            <a class="all" href="/blog">All posts</a>
+          </footer>
+        </article>
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>
+
+<style>
+  article {
+    max-width: 64rem;
+    margin: 0 auto var(--space-2xl);
+  }
+
+  .column {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
+  .back,
+  .all {
+    font-size: var(--step--1);
+    color: var(--gray);
+    text-decoration: none;
+  }
+  .back:hover,
+  .all:hover {
+    color: var(--accent);
+  }
+
+  h1 {
+    margin: var(--space-s) 0 0;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: var(--step-2);
+    line-height: 1.1;
+    color: var(--accent);
+  }
+
+  .lede {
+    margin: var(--space-xs) 0 var(--space-3xs);
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--gray);
+  }
+
+  time {
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+
+  .prose {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.75;
+    color: var(--accent);
+  }
+
+  .prose :global(p) {
+    margin: 0 0 var(--space-s);
+  }
+
+  .prose :global(h2) {
+    margin: var(--space-l) 0 var(--space-xs);
+    font-family: "FiraCode", monospace;
+    font-weight: 400;
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+
+  .prose :global(a),
+  .credit a {
+    color: var(--accent);
+    text-decoration-color: var(--palette-teal);
+    text-underline-offset: 0.2em;
+  }
+
+  .prose :global(code) {
+    font-family: "FiraCode", monospace;
+    font-size: 0.9em;
+  }
+
+  .prose :global(pre),
+  footer :global(pre) {
+    margin: 0 0 var(--space-s);
+    padding: var(--space-s);
+    overflow-x: auto;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    background: transparent !important;
+    border-left: 2px solid var(--palette-teal);
+  }
+
+  footer {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-s);
+    border-top: 1px solid color-mix(in srgb, var(--gray) 35%, transparent);
+    font-size: var(--step--1);
+  }
+
+  details {
+    margin-bottom: var(--space-xs);
+  }
+
+  summary {
+    cursor: pointer;
+    color: var(--accent);
+  }
+
+  .file {
+    color: var(--gray);
+    margin-left: var(--space-2xs);
+  }
+
+  details[open] summary {
+    margin-bottom: var(--space-xs);
+  }
+
+  details :global(pre) {
+    max-height: 32rem;
+  }
+
+  .credit {
+    margin: var(--space-s) 0;
+    font-family: "Open Sans", sans-serif;
+    color: var(--gray);
+  }
+
+  .all {
+    display: inline-block;
+    margin-top: var(--space-xs);
+  }
+</style>

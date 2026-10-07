@@ -1,0 +1,153 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE } from "../../consts";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const month = new Intl.DateTimeFormat("en", { month: "short", year: "numeric", timeZone: "UTC" });
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`Blog | ${SITE_TITLE}`}
+      description="Small things I build to learn, running live in the page."
+    />
+  </head>
+  <body>
+    <div class="u-container">
+      <Header />
+      <main>
+        <div class="column">
+          <h1>Blog</h1>
+          <p class="lede">
+            Small things I build to learn: graphics, generative art, and trying out
+            programming languages I don't use at work. Every post has the
+            experiment running in it.
+          </p>
+
+          <ol class="posts">
+            {
+              posts.map((post) => (
+                <li>
+                  <a href={`/blog/${post.id}`}>
+                    <time datetime={post.data.date.toISOString()}>
+                      {month.format(post.data.date)}
+                    </time>
+                    <span class="text">
+                      <span class="title">{post.data.title}</span>
+                      <span class="description">{post.data.description}</span>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>
+
+<style>
+  .column {
+    max-width: 42rem;
+    margin: 0 auto var(--space-2xl);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 300;
+    font-size: var(--step-2);
+    line-height: 1.1;
+    color: var(--accent);
+  }
+
+  .lede {
+    margin: var(--space-xs) 0 var(--space-l);
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--gray);
+  }
+
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .posts a {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: var(--space-s);
+    padding: var(--space-xs) 0;
+    text-decoration: none;
+    color: var(--accent);
+    border-top: 1px solid color-mix(in srgb, var(--gray) 35%, transparent);
+  }
+
+  time {
+    font-size: var(--step--1);
+    color: var(--gray);
+    padding-top: 0.2em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .title {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    font-weight: 400;
+    line-height: 1.3;
+    width: fit-content;
+    /* Underline in the palette's blues and greens, drawn in on hover */
+    background: linear-gradient(
+        90deg,
+        var(--palette-blue),
+        var(--palette-steel),
+        var(--palette-teal),
+        var(--palette-seafoam)
+      )
+      no-repeat 0 100% / 0 2px;
+    transition: background-size 300ms ease;
+  }
+
+  .posts a:hover .title,
+  .posts a:focus-visible .title {
+    background-size: 100% 2px;
+  }
+
+  .description {
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--gray);
+  }
+
+  @media (max-width: 48rem) {
+    .posts a {
+      grid-template-columns: 1fr;
+      gap: var(--space-3xs);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .title {
+      transition: none;
+    }
+  }
+</style>

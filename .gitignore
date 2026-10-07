@@ -1,5 +1,5 @@
 # build output
-dist/
+/dist/
 # generated types
 .astro/
 
@@ -28,3 +28,7 @@ CV/
 notes/
 /cv.html
 /Jessai-Maya-CV.pdf
+
+# Rust build output for experiments
+src/native/**/target/
+src/native/**/node_modules/

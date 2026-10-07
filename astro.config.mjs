@@ -10,8 +10,19 @@ export default defineConfig({
     enabled: false
   },
   site: "https://jessai.dev",
+  markdown: {
+    // Code follows the site's theme switch (styles in global.css)
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+    },
+  },
   redirects: {
     "/about": "/#about",
   },
-  integrations: [mdx(), sitemap(), react()]
+  integrations: [
+    mdx(),
+    sitemap(),
+    react(),
+  ]
 });

@@ -1,0 +1,351 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { rampColors } from "../data/palette";
+
+type Data = CollectionEntry<"blog">["data"];
+
+interface Props {
+  experiment: Data["experiment"];
+  runtimes: Data["runtimes"];
+  controls: Data["controls"];
+  ramp: Data["ramp"];
+}
+
+const { experiment, runtimes, controls, ramp } = Astro.props;
+const canvasId = `live-${experiment}`;
+---
+
+<figure
+  class="live"
+  data-canvas-id={canvasId}
+  data-runtimes={JSON.stringify(runtimes)}
+  data-palette={rampColors(ramp).join(",")}
+  data-state="loading"
+>
+  <div class="stage">
+    <canvas id={canvasId} aria-label="Live experiment"></canvas>
+    <p class="status loading">Loading</p>
+    <p class="status error">This experiment couldn't start in your browser.</p>
+  </div>
+
+  <figcaption class="panel">
+    <div class="row">
+      {
+        runtimes.length > 1 && (
+          <div class="runtimes" role="group" aria-label="Implementation">
+            {runtimes.map((runtime, index) => (
+              <button
+                type="button"
+                data-runtime={index}
+                aria-pressed={index === 0 ? "true" : "false"}
+              >
+                {runtime.label}
+              </button>
+            ))}
+          </div>
+        )
+      }
+      <button type="button" class="pause" aria-pressed="false">Pause</button>
+    </div>
+
+    {
+      controls.length > 0 && (
+        <div class="controls">
+          {controls.map((control) => (
+            <label>
+              <span class="name">{control.label}</span>
+              <input
+                type="range"
+                name={control.name}
+                min={control.min}
+                max={control.max}
+                step={control.step}
+                value={control.value}
+              />
+              <output>{control.value}</output>
+            </label>
+          ))}
+        </div>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .live {
+    margin: var(--space-m) 0 var(--space-l);
+  }
+
+  .stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    /* Leave room for the title above it on laptop screens */
+    max-height: 62vh;
+    /* A soft wash of the palette behind the drawing */
+    background:
+      radial-gradient(
+        ellipse 60% 55% at 50% 100%,
+        color-mix(in srgb, var(--palette-teal) 14%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 45% 40% at 50% 30%,
+        color-mix(in srgb, var(--palette-sky) 22%, transparent),
+        transparent 70%
+      );
+  }
+
+  /* Out of flow, so the backing size never feeds back into the layout */
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .status {
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--gray);
+    font-family: "Open Sans", sans-serif;
+  }
+  [data-state="loading"] .loading,
+  [data-state="error"] .error {
+    display: grid;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-top: var(--space-s);
+    border-top: 1px solid color-mix(in srgb, var(--gray) 40%, transparent);
+    font-size: var(--step--1);
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+  }
+
+  .runtimes {
+    display: flex;
+    gap: var(--space-s);
+  }
+
+  button {
+    font: inherit;
+    color: var(--gray);
+    background: none;
+    border: 0;
+    padding: 0 0 2px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+  }
+  button:hover {
+    color: var(--accent);
+  }
+  .runtimes button[aria-pressed="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  label {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr 2.5rem;
+    align-items: center;
+    gap: var(--space-2xs);
+    color: var(--gray);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--palette-teal);
+  }
+
+  output {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+
+  @media (max-width: 48rem) {
+    .stage {
+      aspect-ratio: 1;
+    }
+  }
+</style>
+
+<script>
+  // Every experiment exposes `setup`, `frame` and `set_param`, and optionally
+  // `set_palette`. This script owns the loop, sizing, colours and controls.
+  type Runtime = {
+    type: "wasm" | "script";
+    label: string;
+    src: string;
+    global?: string;
+  };
+  type Api = {
+    setup(canvasId: string): void;
+    frame(time: number): void;
+    set_param(name: string, value: number): void;
+    /** Comma separated hex colours from src/data/palette.ts */
+    set_palette?(colors: string): void;
+  };
+
+  const modules = new Map<string, Promise<Api>>();
+
+  function load(runtime: Runtime): Promise<Api> {
+    let api = modules.get(runtime.src);
+    if (!api) {
+      api =
+        runtime.type === "wasm"
+          ? // A full URL, so Vite's dev server serves the file from public/
+            // as-is instead of trying to process it as source
+            import(/* @vite-ignore */ new URL(runtime.src, location.href).href).then(
+              async (module) => {
+                await module.default();
+                return module as Api;
+              },
+            )
+          : new Promise<Api>((resolve, reject) => {
+              const script = document.createElement("script");
+              script.src = runtime.src;
+              script.onload = () =>
+                resolve((window as any)[runtime.global ?? ""] as Api);
+              script.onerror = reject;
+              document.head.append(script);
+            });
+      modules.set(runtime.src, api);
+    }
+    return api;
+  }
+
+  function mount(figure: HTMLElement) {
+    const stage = figure.querySelector<HTMLElement>(".stage")!;
+    const canvasId = figure.dataset.canvasId!;
+    const runtimes: Runtime[] = JSON.parse(figure.dataset.runtimes!);
+    const colors = figure.dataset.palette ?? "";
+    const pause = figure.querySelector<HTMLButtonElement>(".pause")!;
+    const inputs = [...figure.querySelectorAll<HTMLInputElement>("input")];
+
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let api: Api | null = null;
+    let playing = !reducedMotion;
+    let visible = true;
+    let elapsed = 0;
+    let last = performance.now();
+    let switching = 0;
+
+    const setPaused = () => {
+      pause.textContent = playing ? "Pause" : "Play";
+      pause.setAttribute("aria-pressed", String(!playing));
+    };
+    setPaused();
+
+    const sizeCanvas = (canvas: HTMLCanvasElement) => {
+      const { width, height } = stage.getBoundingClientRect();
+      const ratio = Math.min(devicePixelRatio, 2);
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+    };
+
+    // A canvas holds either a 2D or a WebGL context for life, so each runtime
+    // gets a fresh one.
+    async function use(index: number) {
+      const runtime = runtimes[index];
+      if (!runtime) return;
+      const ticket = ++switching;
+      api = null;
+      figure.dataset.state = "loading";
+      figure
+        .querySelectorAll<HTMLButtonElement>("[data-runtime]")
+        .forEach((button) =>
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.runtime === String(index)),
+          ),
+        );
+
+      // Cloning keeps the scoped style attribute Astro puts on the original
+      const current = stage.querySelector("canvas")!;
+      const canvas = current.cloneNode(false) as HTMLCanvasElement;
+      canvas.setAttribute("aria-label", `Live experiment, ${runtime.label}`);
+      current.replaceWith(canvas);
+      sizeCanvas(canvas);
+
+      try {
+        const next = await load(runtime);
+        if (ticket !== switching) return;
+        next.setup(canvasId);
+        next.set_palette?.(colors);
+        inputs.forEach((input) => next.set_param(input.name, input.valueAsNumber));
+        next.frame(elapsed);
+        api = next;
+        figure.dataset.state = "ready";
+      } catch (error) {
+        console.error(error);
+        if (ticket === switching) figure.dataset.state = "error";
+      }
+    }
+
+    function tick(now: number) {
+      if (playing && visible && api) {
+        elapsed += Math.min(now - last, 100) / 1000;
+        api.frame(elapsed);
+      }
+      last = now;
+      requestAnimationFrame(tick);
+    }
+
+    inputs.forEach((input) =>
+      input.addEventListener("input", () => {
+        input.nextElementSibling!.textContent = input.value;
+        api?.set_param(input.name, input.valueAsNumber);
+        if (!playing) api?.frame(elapsed);
+      }),
+    );
+
+    figure
+      .querySelectorAll<HTMLButtonElement>("[data-runtime]")
+      .forEach((button) =>
+        button.addEventListener("click", () => use(Number(button.dataset.runtime))),
+      );
+
+    pause.addEventListener("click", () => {
+      playing = !playing;
+      setPaused();
+    });
+
+    new ResizeObserver(() => {
+      const canvas = stage.querySelector("canvas")!;
+      sizeCanvas(canvas);
+      if (api) {
+        api.setup(canvasId);
+        api.frame(elapsed);
+      }
+    }).observe(stage);
+
+    // Stop drawing while the experiment is scrolled out of view
+    new IntersectionObserver((entries) => {
+      visible = entries.some((entry) => entry.isIntersecting);
+    }).observe(stage);
+
+    use(0);
+    requestAnimationFrame(tick);
+  }
+
+  document.querySelectorAll<HTMLElement>("figure.live").forEach(mount);
+</script>
