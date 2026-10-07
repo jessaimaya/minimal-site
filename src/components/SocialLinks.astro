@@ -82,28 +82,28 @@
     justify-content: space-between;
     align-items: center;
     align-content: center;
-    font-size: var(--step-0);
+    font-size: var(--step--1);
     text-decoration: none;
     font-family: "Open Sans", sans-serif;
     color: var(--accent);
   }
   svg {
-    width: var(--step-0);
+    width: var(--step--1);
     fill: var(--accent);
     display: inline-block;
-    margin-right: var(--space-s);
+    margin-right: var(--space-2xs);
   }
   @media (max-width: 48rem) {
     .social-links {
       flex-wrap: wrap;
       justify-content: flex-start;
+      gap: var(--space-2xs);
     }
     li {
       flex: 0;
-      margin: var(--space-s);
     }
     a {
-      font-size: var(--step-1);
+      font-size: var(--step--1);
     }
   }
 </style>
