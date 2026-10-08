@@ -2,7 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import "../styles/global.css";
-import { SITE_TITLE } from "../consts";
+import { GOATCOUNTER_URL, SITE_TITLE } from "../consts";
 import { paletteCss } from "../data/palette";
 
 interface Props {
@@ -25,6 +25,13 @@ const {
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Privacy-friendly page view counts, no cookies -->
+<script
+  is:inline
+  async
+  data-goatcounter={GOATCOUNTER_URL}
+  src="https://gc.zgo.at/count.js"></script>
 
 <!-- Colour palette as CSS variables (src/data/palette.ts) -->
 <style is:global set:html={paletteCss}></style>
