@@ -7,6 +7,7 @@ import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import LiveExperiment from "../../components/LiveExperiment.astro";
+import ProjectEmbed from "../../components/ProjectEmbed.astro";
 import { SITE_TITLE } from "../../consts";
 
 export async function getStaticPaths() {
@@ -15,7 +16,8 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, description, date, experiment, ramp, runtimes, controls, credit } = post.data;
+const { title, description, date, experiment, ramp, runtimes, controls, credit, embed, cover, stack, links } =
+  post.data;
 const { Content } = await render(post);
 
 // Source shown under the post, read at build time from src/native/
@@ -32,7 +34,7 @@ const day = new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year:
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={`${title} | ${SITE_TITLE}`} description={description} />
+    <BaseHead title={`${title} | ${SITE_TITLE}`} description={description} {...(cover && { image: cover })} />
   </head>
   <body>
     <div class="u-container">
@@ -44,9 +46,32 @@ const day = new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year:
             <h1>{title}</h1>
             <p class="lede">{description}</p>
             <time datetime={date.toISOString()}>{day.format(date)}</time>
+            {
+              stack.length > 0 && (
+                <p class="stack">
+                  <span class="label">Built with</span> {stack.join(", ")}
+                </p>
+              )
+            }
+            {
+              links.length > 0 && (
+                <ul class="links">
+                  {links.map((link) => (
+                    <li>
+                      <a href={link.url}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
           </header>
 
-          <LiveExperiment experiment={experiment} runtimes={runtimes} controls={controls} ramp={ramp} />
+          {
+            experiment && runtimes.length > 0 && (
+              <LiveExperiment experiment={experiment} runtimes={runtimes} controls={controls} ramp={ramp} />
+            )
+          }
+          {embed && <ProjectEmbed {...embed} />}
 
           <div class="column prose">
             <Content />
@@ -128,11 +153,57 @@ const day = new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year:
     color: var(--gray);
   }
 
+  .stack {
+    margin: var(--space-xs) 0 0;
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--accent);
+  }
+  .stack .label {
+    color: var(--gray);
+    margin-right: var(--space-3xs);
+  }
+
+  .links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin: var(--space-xs) 0 0;
+    padding: 0;
+    font-size: var(--step--1);
+  }
+  .links a {
+    color: var(--accent);
+    text-decoration-color: var(--palette-teal);
+    text-underline-offset: 0.2em;
+  }
+
   .prose {
     font-family: "Open Sans", sans-serif;
     font-size: var(--step--1);
     line-height: 1.75;
     color: var(--accent);
+  }
+
+  .prose :global(video),
+  .prose :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--space-2xs);
+    margin: var(--space-s) 0;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 var(--space-s);
+    padding-left: var(--space-m);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-3xs);
   }
 
   .prose :global(p) {

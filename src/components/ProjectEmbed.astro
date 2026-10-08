@@ -1,0 +1,114 @@
+---
+interface Props {
+  src: string;
+  title: string;
+  poster: string;
+  aspect: string;
+}
+
+const { src, title, poster, aspect } = Astro.props;
+---
+
+<figure class="embed" style={`--aspect: ${aspect}`} data-src={src} data-title={title}>
+  <div class="frame">
+    <button type="button" class="play" aria-label={`Play ${title} here`}>
+      <img src={poster} alt="" loading="lazy" decoding="async" />
+      <span class="label">Play here</span>
+    </button>
+  </div>
+  <figcaption>
+    <span>Loads the live build when you press play. Sound on.</span>
+    <a href={src} target="_blank" rel="noopener">Open full screen</a>
+  </figcaption>
+</figure>
+
+<style>
+  .embed {
+    margin: var(--space-m) 0 var(--space-l);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .frame {
+    /* Sized by height so tall (portrait) projects fit on screen */
+    height: min(80vh, 46rem);
+    max-width: 100%;
+    aspect-ratio: var(--aspect);
+    border-radius: var(--space-s);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--palette-steel) 18%, var(--background));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--gray) 35%, transparent);
+  }
+
+  .play,
+  .frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .play {
+    position: relative;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .label {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-l);
+    translate: -50% 0;
+    padding: var(--space-2xs) var(--space-m);
+    border-radius: 999px;
+    font-family: "Open Sans", sans-serif;
+    font-size: var(--step-0);
+    color: var(--dark);
+    background: var(--palette-seafoam);
+    transition: background-color 150ms ease;
+  }
+  .play:hover .label,
+  .play:focus-visible .label {
+    background: var(--palette-teal);
+  }
+
+  figcaption {
+    display: flex;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: var(--step--1);
+    color: var(--gray);
+  }
+  figcaption a {
+    color: var(--accent);
+    text-decoration-color: var(--palette-teal);
+    text-underline-offset: 0.2em;
+  }
+</style>
+
+<script>
+  // Swap the poster for the live project only when asked, so the post stays
+  // light and the project's sound starts from the reader's own tap.
+  document.querySelectorAll<HTMLElement>("figure.embed").forEach((figure) => {
+    const button = figure.querySelector<HTMLButtonElement>(".play");
+    button?.addEventListener("click", () => {
+      const iframe = document.createElement("iframe");
+      iframe.src = figure.dataset.src!;
+      iframe.title = figure.dataset.title!;
+      iframe.allow = "autoplay; fullscreen";
+      iframe.allowFullscreen = true;
+      button.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+</script>
